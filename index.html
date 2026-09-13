@@ -119,7 +119,7 @@ button:disabled{cursor:wait;opacity:.5}
  <div class="auth-card"><div class="logo">CB</div><h1>Central de Boletos</h1><p>Seus boletos e comprovantes, organizados em um só lugar.</p>
  <form id="authForm"><div class="field"><label for="authEmail">E-mail</label><input id="authEmail" type="email" autocomplete="username" required></div>
  <div class="field"><label for="authPassword">Senha</label><input id="authPassword" type="password" autocomplete="current-password" required minlength="8"></div>
- <button id="authSubmit" class="btn soft" disabled>Entrar</button><button id="signupBtn" class="btn" type="button" disabled>Criar conta</button>
+ <button id="authSubmit" class="btn soft" disabled>Entrar</button><p>Para obter acesso, fale com o administrador.</p>
  <p id="authStatus" role="status">Conectando…</p></form></div>
 </section>
 <div id="operationError" role="alert" hidden></div>
@@ -162,7 +162,7 @@ button:disabled{cursor:wait;opacity:.5}
   <main class="main">
     <div class="topbar">
       <div class="topbar-left"><button class="menu-toggle" id="menuToggle" aria-label="Fechar menu">☰</button><div><h1 id="topTitle">Central</h1><p id="centralMonthLabel">Visão geral do mês</p></div></div>
-      <div class="topbar-right"><span id="accountEmail"></span><button class="mini" id="importBtn" hidden>Importar dados locais</button><button class="mini" id="logoutBtn">Sair</button></div>
+      <div class="topbar-right"><span id="accountEmail"></span><button class="mini" id="importBtn" hidden>Importar dados locais</button><button class="mini" id="usersBtn" hidden>Usuários</button><button class="mini" id="logoutBtn">Sair</button></div>
     </div>
     <div class="content">
       <section id="central" class="panel active">
@@ -213,6 +213,7 @@ button:disabled{cursor:wait;opacity:.5}
 <div class="geninho" id="geninhoChat" aria-label="Chat do Geninho"><div class="geninho-head"><div class="geninho-title"><div class="geninho-avatar">G</div><div><strong>Geninho</strong><small>Assistente da Central de Boletos</small></div></div><button class="geninho-close" id="geninhoClose" aria-label="Fechar">×</button></div><div><div class="messages" id="messages"><div class="msg ai">Oi! Eu sou o <b>Geninho</b>. Posso consultar os boletos cadastrados e, na próxima etapa, vou ler sua planilha e organizar o mês automaticamente.</div></div><div class="geninho-suggestions"><button data-geninho="Quais boletos vencem esta semana?">Esta semana</button><button data-geninho="Quais estão sem PDF?">A lançar</button><button data-geninho="Quais pagos estão sem comprovante?">Comprovantes</button></div></div><div class="chatinput"><input id="chatText" placeholder="Fale com o Geninho..."/><button class="btn primary" id="sendChat">Enviar</button></div></div>
 
 <div class="modal" id="modal"><div class="dialog"><h2>Novo boleto</h2><p>Você pode cadastrar uma previsão sem PDF; ela ficará como “A lançar”.</p><form id="form"><div class="grid2"><div class="field"><label>Fornecedor</label><input id="supplier" required placeholder="Ex.: ENEL"/></div><div class="field"><label>Vencimento</label><input id="due" type="date" required/></div></div><div class="field"><label>Linha digitável / código do boleto</label><input id="barcode" placeholder="Cole ou digite o código"/></div><div class="grid2"><div class="field"><label>Valor do boleto</label><input id="amount" inputmode="decimal" placeholder="Ex.: 1250,90"/></div><div class="field"><label>Status</label><select id="status"><option value="open">A pagar</option><option value="paid">Pago</option></select></div></div><div class="field"><label>PDF do boleto</label><input id="billFile" type="file" accept="application/pdf"/></div><div class="field"><label>Comprovante (opcional)</label><input id="receiptFile" type="file" accept="application/pdf,image/png,image/jpeg,image/webp"/></div><div class="field"><label>Observação</label><textarea id="note" placeholder="Opcional"></textarea></div><div class="dialog-actions"><button type="button" class="btn" id="cancel">Cancelar</button><button class="btn primary">Salvar boleto</button></div></form></div></div>
+<div class="modal" id="usersModal"><div class="dialog" style="max-width:460px"><h2>Criar acesso</h2><p>A pessoa terá acesso a todos os boletos e comprovantes da equipe.</p><form id="usersForm"><div class="field"><label for="newUserEmail">E-mail</label><input id="newUserEmail" type="email" autocomplete="off" required></div><div class="field"><label for="newUserPassword">Senha de acesso</label><input id="newUserPassword" type="password" autocomplete="new-password" minlength="8" maxlength="128" required></div><p id="usersMessage" role="status"></p><div class="dialog-actions"><button class="btn" type="button" id="closeUsers">Fechar</button><button class="btn soft" id="saveUser">Criar acesso</button></div></form></div></div>
 <div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"></script>
 <script>
@@ -233,7 +234,7 @@ function unpack(r){return {id:r.id,supplier:r.supplier,due:r.due_date,amount:Num
 async function getAll(){
  const uid=requireUser(), result=[];
  for(let offset=0;;offset+=500){
-  const {data,error}=await sb.from('boletos').select('*').eq('owner_id',uid).order('id').range(offset,offset+499);
+  const {data,error}=await sb.from('boletos').select('*').order('id').range(offset,offset+499);
   if(error)throw error;result.push(...data.map(unpack));if(data.length<500)break;
  }
  return result;
@@ -244,7 +245,7 @@ function fileSpec(id){
  if(id.startsWith('receipt_'))return {bucket:'comprovantes',path:requireUser()+'/'+id};
  // Persisted paths contain only a user UUID and a generated bill_/receipt_ key.
  const parts=id.split('/');
- if(parts.length!==2||parts[0]!==requireUser()||! /^(bill|receipt)_[0-9a-f-]{36}$/.test(parts[1]))throw new Error('Caminho de arquivo inválido.');
+ if(parts.length!==2||! /^[0-9a-f-]{36}$/.test(parts[0])||! /^(bill|receipt)_[0-9a-f-]{36}$/.test(parts[1]))throw new Error('Caminho de arquivo inválido.');
  return {bucket:parts[1].startsWith('bill_')?'boletos':'comprovantes',path:id};
 }
 async function putFile(id,file){
@@ -269,13 +270,14 @@ async function delFile(id){
 }
 async function putRow(x,insert=false){
  const uid=requireUser();
- const payload={id:x.id,owner_id:uid,supplier:x.supplier,due_date:x.due,amount:amountNum(x.amount),barcode:x.barcode||null,status:x.status,
+ const payload={id:x.id,supplier:x.supplier,due_date:x.due,amount:amountNum(x.amount),barcode:x.barcode||null,status:x.status,
  bill_path:x.billId?fileSpec(x.billId).path:null,receipt_path:x.receiptId?fileSpec(x.receiptId).path:null,note:x.note||null,paid_at:x.paidAt||null};
- const query=insert?sb.from('boletos').insert(payload):sb.from('boletos').update(payload).eq('id',x.id).eq('owner_id',uid);
+ if(insert)payload.owner_id=uid;
+ const query=insert?sb.from('boletos').insert(payload):sb.from('boletos').update(payload).eq('id',x.id);
  const {data,error}=await query.select('id').single();if(error)throw error;
  stagedFiles.delete(x.billId);stagedFiles.delete(x.receiptId);return data;
 }
-async function delRow(id){const {error}=await sb.from('boletos').delete().eq('id',id).eq('owner_id',requireUser()).select('id').single();if(error)throw error}
+async function delRow(id){const {error}=await sb.from('boletos').delete().eq('id',id).select('id').single();if(error)throw error}
 function showError(e){console.error(e);const msg=e?.message||'Não foi possível concluir. Tente novamente.';$('#operationError').textContent=msg;$('#operationError').hidden=false}
 async function runAction(fn){
  if(busy)return;requireUser();busy=true;document.body.classList.add('working');$('#operationError').hidden=true;
@@ -294,9 +296,12 @@ async function applySession(session){
  const epoch=++sessionEpoch;currentUser=session?.user||null;rows=[];
  $('#modal').classList.remove('open');$('#form').reset();$('#geninhoChat').classList.remove('open');
  $('#messages').textContent='';$('#operationError').hidden=true;$('#accountEmail').textContent=currentUser?.email||'';
+ $('#usersModal').classList.remove('open');$('#usersForm').reset();
+ $('#usersBtn').hidden=!(currentUser?.id==='24e04247-35c4-4e62-ab93-2229322a7b28'&&currentUser?.app_metadata?.central_admin===true);
  document.body.classList.toggle('signed-in',!!currentUser);
  $('#authStatus').textContent='';
  if(!currentUser)return;
+ if(currentUser.app_metadata?.central_access!==true){showError(new Error('Esta conta não tem acesso à Central. Fale com o administrador.'));return}
  try{const fetched=await getAll();if(epoch!==sessionEpoch)return;rows=fetched;render();await updateImportButton()}catch(e){showError(e)}
 }
 async function startCloud(){
@@ -309,8 +314,9 @@ async function startCloud(){
    if(event==='TOKEN_REFRESHED'&&session?.user?.id===currentUser?.id)return;
    setTimeout(()=>applySession(session),0);
   });
-  const {error}=await sb.auth.getSession();if(error)throw error;
-  $('#authStatus').textContent='';$('#authSubmit').disabled=false;$('#signupBtn').disabled=false;
+  const {data:initial,error}=await sb.auth.getSession();if(error)throw error;
+  if(initial.session){const refreshed=await sb.auth.refreshSession();if(refreshed.error)throw refreshed.error;await applySession(refreshed.data.session)}
+  $('#authStatus').textContent='';$('#authSubmit').disabled=false;
  }catch(e){$('#authStatus').textContent=e.message}
 }
 $('#authForm').onsubmit=async e=>{
@@ -319,15 +325,20 @@ $('#authForm').onsubmit=async e=>{
  catch(e){$('#authStatus').textContent='Não foi possível entrar. Confira e-mail e senha. '+e.message}
  finally{$('#authSubmit').disabled=false}
 };
-$('#signupBtn').onclick=async()=>{
- if(!$('#authForm').reportValidity())return;
- if($('#authPassword').value.length<8){$('#authStatus').textContent='Use uma senha com pelo menos 8 caracteres.';return}
- $('#signupBtn').disabled=true;
- try{const {data,error}=await sb.auth.signUp({email:$('#authEmail').value.trim(),password:$('#authPassword').value});if(error)throw error;
- $('#authStatus').textContent=data.session?'Conta criada.':'Confira seu e-mail para confirmar o cadastro. Depois, volte e entre com sua senha.'}
- catch(e){$('#authStatus').textContent=e.message}finally{$('#signupBtn').disabled=false}
-};
 $('#logoutBtn').onclick=async()=>{if(busy)return;const {error}=await sb.auth.signOut({scope:'local'});if(error)showError(error);else await applySession(null)};
+
+$('#usersBtn').onclick=()=>{$('#usersMessage').textContent='';$('#usersModal').classList.add('open')};
+$('#closeUsers').onclick=()=>{$('#usersForm').reset();$('#usersModal').classList.remove('open')};
+$('#usersForm').onsubmit=async e=>{
+ e.preventDefault();$('#saveUser').disabled=true;$('#usersMessage').textContent='Criando acesso…';
+ try{
+  const {data,error}=await sb.functions.invoke('central-create-user',{body:{email:$('#newUserEmail').value.trim(),password:$('#newUserPassword').value}});
+  if(error){let message=error.message;try{const body=await error.context.json();message=body.error||message}catch{}throw new Error(message)}
+  if(data?.error)throw new Error(data.error);
+  $('#usersMessage').textContent='Acesso criado para '+data.email+'. A pessoa já pode entrar.';
+  $('#usersForm').reset();
+ }catch(e){$('#usersMessage').textContent=e.message}finally{$('#saveUser').disabled=false}
+};
 window.addEventListener('unhandledrejection',e=>{showError(e.reason);e.preventDefault()});
 
 function openLegacy(){return new Promise((resolve,reject)=>{
