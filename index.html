@@ -128,6 +128,12 @@ button:disabled{cursor:wait;opacity:.5}
 .geninho .geninho-head{border-bottom-color:#3c4050}
 .geninho .chatinput .btn{background:#2b7468;color:#fff;border-color:#398b7c}
 @media(max-width:480px){.geninho{right:12px;bottom:82px;width:calc(100vw - 24px);height:min(540px,calc(100dvh - 110px));max-height:calc(100dvh - 110px)}}
+
+.geninho.open{grid-template-rows:auto minmax(0,1fr) auto auto}
+.g-attachments{display:flex;gap:8px;padding:8px 12px;background:#171c23;border-top:1px solid #303640}
+.g-review{display:grid;gap:8px;white-space:normal;margin-top:12px}.g-review .field{margin:0}.g-review input,.g-review select{min-width:0;width:100%;background:#11161c;color:#f2f4f7;border:1px solid #46515e;border-radius:8px;padding:9px}
+.g-record{margin-top:12px;padding-top:10px;border-top:1px solid #46515e;white-space:normal}.g-record .mini{margin:5px 4px 0 0}
+.geninho .msg{max-width:96%}.geninho .msg.user{max-width:86%}
 </style>
 </head>
 <body>
@@ -226,7 +232,7 @@ button:disabled{cursor:wait;opacity:.5}
 </div>
 
 <button class="geninho-launch" id="geninhoLaunch" aria-label="Abrir Geninho"><span class="geninho-dot">G</span></button>
-<div class="geninho" id="geninhoChat" aria-label="Chat do Geninho"><div class="geninho-head"><div class="geninho-title"><div class="geninho-avatar">G</div><div><strong>Geninho</strong><small>Assistente da Central de Boletos</small></div></div><button class="geninho-close" id="geninhoClose" aria-label="Fechar">×</button></div><div class="geninho-body"><div class="messages" id="messages"><div class="msg ai">Oi! Eu sou o <b>Geninho</b>. Posso consultar vencimentos, encontrar boletos sem PDF e verificar comprovantes pendentes.</div></div><div class="geninho-suggestions"><button data-geninho="Quais boletos vencem esta semana?">Esta semana</button><button data-geninho="Quais estão sem PDF?">A lançar</button><button data-geninho="Quais pagos estão sem comprovante?">Comprovantes</button></div></div><div class="chatinput"><input id="chatText" placeholder="Fale com o Geninho..."/><button class="btn primary" id="sendChat">Enviar</button></div></div>
+<div class="geninho" id="geninhoChat" aria-label="Chat do Geninho"><div class="geninho-head"><div class="geninho-title"><div class="geninho-avatar">G</div><div><strong>Geninho</strong><small>Assistente da Central de Boletos</small></div></div><button class="geninho-close" id="geninhoClose" aria-label="Fechar">×</button></div><div class="geninho-body"><div class="messages" id="messages"><div class="msg ai">Oi! Eu sou o <b>Geninho</b>. Posso consultar vencimentos, encontrar boletos sem PDF e verificar comprovantes pendentes.</div></div><div class="geninho-suggestions"><button data-geninho="Quais boletos vencem esta semana?">Esta semana</button><button data-geninho="Quais estão sem PDF?">A lançar</button><button data-geninho="Quais pagos estão sem comprovante?">Comprovantes</button></div></div><div class="g-attachments"><button class="mini" id="geninhoBill" type="button">+ Boleto PDF</button><button class="mini" id="geninhoReceipt" type="button">+ Comprovante</button></div><div class="chatinput"><input id="chatText" placeholder="Fale com o Geninho..."/><button class="btn primary" id="sendChat">Enviar</button></div></div>
 
 <div class="modal" id="modal"><div class="dialog"><h2>Novo boleto</h2><p>Você pode cadastrar uma previsão sem PDF; ela ficará como “A lançar”.</p><form id="form"><div class="grid2"><div class="field"><label>Fornecedor</label><input id="supplier" required placeholder="Ex.: ENEL"/></div><div class="field"><label>Vencimento</label><input id="due" type="date" required/></div></div><div class="field"><label>Linha digitável / código do boleto</label><input id="barcode" placeholder="Cole ou digite o código"/></div><div class="grid2"><div class="field"><label>Valor do boleto</label><input id="amount" inputmode="decimal" placeholder="Ex.: 1250,90"/></div><div class="field"><label>Status</label><select id="status"><option value="open">A pagar</option><option value="paid">Pago</option></select></div></div><div class="field"><label>PDF do boleto</label><input id="billFile" type="file" accept="application/pdf"/></div><div class="field"><label>Comprovante (opcional)</label><input id="receiptFile" type="file" accept="application/pdf,image/png,image/jpeg,image/webp"/></div><div class="field"><label>Observação</label><textarea id="note" placeholder="Opcional"></textarea></div><div class="dialog-actions"><button type="button" class="btn" id="cancel">Cancelar</button><button class="btn primary">Salvar boleto</button></div></form></div></div>
 <div class="modal" id="usersModal"><div class="dialog" style="max-width:460px"><h2>Criar acesso</h2><p>A pessoa terá acesso a todos os boletos e comprovantes da equipe.</p><form id="usersForm"><div class="field"><label for="newUserEmail">E-mail</label><input id="newUserEmail" type="email" autocomplete="off" required></div><div class="field"><label for="newUserPassword">Senha de acesso</label><input id="newUserPassword" type="password" autocomplete="new-password" minlength="8" maxlength="128" required></div><p id="usersMessage" role="status"></p><div class="dialog-actions"><button class="btn" type="button" id="closeUsers">Fechar</button><button class="btn soft" id="saveUser">Criar acesso</button></div></form></div></div>
@@ -468,5 +474,6 @@ $('#geninhoClose').onclick=()=>$('#geninhoChat').classList.remove('open');
 $$('[data-geninho]').forEach(b=>b.onclick=()=>{$('#chatText').value=b.dataset.geninho;sendChat()});
 startCloud();
 </script>
+<script src="/geninho.js"></script>
 </body>
 </html>
