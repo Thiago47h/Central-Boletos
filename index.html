@@ -6,162 +6,260 @@
 <title>Central de Boletos</title>
 <style>
 :root{
-  --bg:#070b17;
-  --bg2:#0c1224;
-  --card:rgba(13,18,37,.72);
-  --card-strong:rgba(18,24,48,.86);
-  --text:#ecf3ff;
-  --muted:#8ea0c7;
-  --border:rgba(141,168,255,.16);
-  --accent:#7c5cff;
-  --accent-2:#00d1ff;
-  --accent-3:#1c2448;
-  --success:#123627;
-  --successText:#91f0b7;
-  --warn:#3c2d11;
-  --warnText:#ffd978;
-  --danger:#3f1820;
-  --dangerText:#ff9eac;
-  --shadow:0 18px 50px rgba(0,0,0,.38);
-  --glow:0 0 0 1px rgba(124,92,255,.18),0 10px 30px rgba(0,209,255,.08),0 18px 40px rgba(124,92,255,.12);
+  --bg:#f7f4ef;
+  --sidebar:#3b322a;
+  --sidebar-soft:#4a4036;
+  --card:#ffffff;
+  --text:#332d28;
+  --muted:#766f68;
+  --border:#e7e0d8;
+  --accent:#4fae9b;
+  --accent-dark:#2f7f72;
+  --purple:#9a65c7;
+  --purple-soft:#f1e8f6;
+  --yellow:#e4b65d;
+  --yellow-soft:#fff5dd;
+  --green-soft:#e7f5f0;
+  --danger:#c95c5c;
+  --danger-soft:#fae8e8;
+  --shadow:0 8px 28px rgba(75,62,50,.06);
 }
 *{box-sizing:border-box}
 html,body{min-height:100%}
-body{
-  margin:0;
-  font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  color:var(--text);
-  background:
-    radial-gradient(circle at 15% 20%, rgba(0,209,255,.14), transparent 28%),
-    radial-gradient(circle at 85% 10%, rgba(124,92,255,.18), transparent 24%),
-    radial-gradient(circle at 80% 70%, rgba(87,110,255,.12), transparent 30%),
-    linear-gradient(180deg,#060912 0%,#091120 50%,#070b17 100%);
+body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+.side{background:linear-gradient(180deg,#15181d 0%, #13161c 100%);color:#f7f3ef;padding:22px 16px 18px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;border-right:1px solid #262a31;box-shadow:inset -1px 0 0 rgba(255,255,255,.02)}
+.brand{display:flex;gap:12px;align-items:center;padding:4px 8px 18px;margin-bottom:14px;border-bottom:1px solid rgba(255,255,255,.06)}
+.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#64d9c4,#46b9a4);display:grid;place-items:center;color:#123731;font-weight:900;font-size:13px;box-shadow:0 10px 24px rgba(79,174,155,.22)}.brand-copy strong{display:block;font-size:17px;line-height:1.05;color:#fff}.brand-copy small{display:block;font-size:12px;color:#9da5b1;margin-top:4px}
+.nav-wrap{padding:0 4px}.nav-label{display:block;color:#808792;text-transform:uppercase;letter-spacing:.12em;font-size:10px;font-weight:700;margin:0 8px 10px}.nav{display:grid;gap:8px}.nav button{border:1px solid transparent;background:transparent;color:#d8dde6;text-align:left;padding:12px 12px;border-radius:14px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:10px;transition:.18s ease}
+.nav button::before{content:attr(data-icon);width:28px;height:28px;border-radius:10px;background:#20242c;color:#97a0ad;display:grid;place-items:center;flex:none;font-size:13px;font-weight:800}.nav button.active,.nav button:hover{background:#21262e;border-color:#2d333d;color:#fff;transform:translateX(2px)}.nav button.active::before,.nav button:hover::before{background:rgba(79,174,155,.14);color:#69d5c1}.app.sidebar-collapsed{grid-template-columns:88px 1fr}.app.sidebar-collapsed .side{padding-left:10px;padding-right:10px}.app.sidebar-collapsed .brand{justify-content:center;padding-left:0;padding-right:0}.app.sidebar-collapsed .brand-copy,.app.sidebar-collapsed .nav-label{display:none}.app.sidebar-collapsed .nav-wrap{padding:0}.app.sidebar-collapsed .nav button{justify-content:center;padding:12px 10px;font-size:0;gap:0}.app.sidebar-collapsed .nav button::before{margin:0}.app.sidebar-collapsed .nav button.active,.app.sidebar-collapsed .nav button:hover{transform:none}.app.sidebar-collapsed .side{align-items:stretch}.app.sidebar-collapsed .logo{margin:0 auto}.app.sidebar-collapsed .brand{border-bottom:1px solid rgba(255,255,255,.06)}.menu-geninho{margin-top:18px;padding:16px;border:1px solid #2f3440;border-radius:18px;background:linear-gradient(135deg,rgba(86,52,120,.42),rgba(22,61,56,.5));box-shadow:0 10px 24px rgba(0,0,0,.16)}.menu-geninho-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}.menu-geninho-icon{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#64d9c4,#46b9a4);display:grid;place-items:center;color:#123731;font-weight:900;font-size:20px;position:relative;flex:none;box-shadow:0 10px 24px rgba(79,174,155,.28), 0 0 0 1px rgba(255,255,255,.10) inset}.menu-geninho-icon::after{content:"";position:absolute;right:-3px;top:-3px;width:10px;height:10px;border-radius:50%;background:#5ec98a;border:2px solid #171a20}.menu-geninho-top strong{display:block;color:#bbf3e8;font-size:17px;line-height:1}.menu-geninho-top span{display:block;color:#b7ddd6;font-size:12px;margin-top:4px}.menu-geninho p{margin:0 0 12px;color:#edf2f7;font-size:13px;line-height:1.5}.menu-geninho-actions{display:flex;gap:8px;flex-wrap:wrap}.menu-geninho-actions button{border-radius:10px;padding:9px 12px;font-size:12px;font-weight:800;border:1px solid transparent}.menu-geninho-actions .main{background:#64d9c4;color:#123731}.menu-geninho-actions .sub{background:#16211f;color:#8fe6d7;border-color:#30524e}.app.sidebar-collapsed .menu-geninho{display:none}
+
+.main{min-width:0}.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);background:rgba(247,244,239,.92);position:sticky;top:0;z-index:5;backdrop-filter:blur(8px)}.topbar-left{display:flex;align-items:center;gap:14px}.menu-toggle{width:40px;height:40px;border-radius:12px;border:1px solid var(--border);background:#fff;color:var(--text);font-size:18px;font-weight:800;display:grid;place-items:center;transition:.18s}.menu-toggle:hover{transform:translateY(-1px);border-color:#46505c}
+.topbar h1{font-size:20px;margin:0;font-weight:800}.topbar p{margin:3px 0 0;color:var(--muted);font-size:13px}.topbar-right{display:flex;align-items:center;gap:11px;color:var(--muted);font-size:12px}.top-avatar{width:36px;height:36px;border-radius:50%;background:#eadfd4;display:grid;place-items:center;font-weight:800;color:#594b41}
+.content{padding:28px 32px 50px;max-width:1200px}.panel{display:none}.panel.active{display:block}
+.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:20px}.panel-head h2{margin:0;font-size:22px}.panel-head p{margin:5px 0 0;color:var(--muted);font-size:13px}
+.actions{display:flex;gap:9px}.btn,.mini{border:1px solid var(--border);background:#fff;color:var(--text);border-radius:9px;padding:9px 13px;font-weight:700;transition:.15s}.btn:hover,.mini:hover{border-color:#cfc3b8;transform:translateY(-1px)}.btn.primary{background:var(--sidebar);border-color:var(--sidebar);color:#fff}.btn.soft{background:var(--green-soft);border-color:#cce9df;color:var(--accent-dark)}
+.ai-brief{display:flex;gap:16px;background:linear-gradient(135deg,rgba(240,228,247,.9),rgba(230,246,241,.9));border:1px solid #ddd0e7;border-radius:16px;padding:20px 22px;margin-bottom:20px}.ai-icon{width:50px;height:50px;border-radius:14px;background:var(--purple);display:grid;place-items:center;color:white;font-weight:900;font-size:20px;position:relative;flex:none}.ai-icon::after{content:'';position:absolute;right:-3px;top:-3px;width:11px;height:11px;border-radius:50%;background:#5ec98a;border:2px solid var(--bg)}.ai-copy{flex:1}.ai-copy strong{color:#71489a}.ai-copy p{margin:4px 0 10px;line-height:1.5;font-size:14px}.ai-actions{display:flex;gap:8px;flex-wrap:wrap}.ai-actions button{border:0;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700}.ai-actions .main{background:var(--accent-dark);color:#fff}.ai-actions .sub{background:#fff;color:#71489a;border:1px solid #ded2e7}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:18px}.central-cards{grid-template-columns:repeat(2,1fr)}.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}.card .label{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.035em;display:flex;align-items:center;gap:7px}.card .label::before{content:'';width:7px;height:7px;border-radius:50%;background:#aaa19a}.card.launch .label::before{background:#aca49d}.card.open .label{color:#9a6f25}.card.open .label::before{background:var(--yellow)}.card.paid .label{color:var(--accent-dark)}.card.paid .label::before{background:var(--accent)}.card .num{font-size:28px;font-weight:850;margin-top:6px}.card .desc{font-size:12.5px;color:var(--muted);margin-top:4px}
+.progress-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 20px;margin-bottom:20px}.progress-top{display:flex;justify-content:space-between;gap:16px;color:var(--muted);font-size:12.5px;font-weight:700}.progress{display:flex;height:10px;border-radius:999px;overflow:hidden;background:#eee9e4;margin:10px 0}.progress span{display:block;height:100%}.progress-paid{background:var(--accent)}.progress-open{background:var(--yellow)}.progress-launch{background:#d6d0ca}.progress-legend{display:flex;gap:18px;color:var(--muted);font-size:12px}.progress-legend span{display:flex;align-items:center;gap:5px}.progress-legend i{width:8px;height:8px;border-radius:2px;display:block}
+.central-grid{display:block}.table-wrap,.side-card{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}.section-title{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 10px}.section-title strong{font-size:15px}.section-title button{border:0;background:none;color:var(--accent-dark);font-weight:700;font-size:12px;padding:4px}.week-list{display:grid}.week-item{display:flex;align-items:center;gap:14px;padding:13px 18px;border-top:1px solid #f0ebe6}.datebox{width:44px;height:44px;border-radius:10px;background:#f1ece6;color:#655c53;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none}.datebox.urgent{background:#f9e8e5;color:#a24949}.datebox.soon{background:#fff0d8;color:#936422}.datebox small{font-size:9px;font-weight:800;text-transform:uppercase;line-height:1}.datebox b{font-size:15px;line-height:1.1}.week-info{flex:1;min-width:0}.week-info h4{margin:0 0 3px;font-size:13.5px}.week-info p{margin:0;color:var(--muted);font-size:12px}.week-value{text-align:right;flex:none}.week-value b{font-size:13.5px}.week-value small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.row-actions{display:flex;gap:6px;flex-wrap:wrap}.mini{padding:7px 10px;font-size:11.5px;background:#fbfaf8}
+.alert-card{padding:18px}.alert-card h3{font-size:15px;margin:0 0 5px}.alert-card p{font-size:12.5px;color:var(--muted);line-height:1.5;margin:0 0 12px}.alert-list{display:grid;gap:8px}.alert-item{padding:11px;border-radius:10px;background:#fbfaf8;border:1px solid #eee8e2}.alert-item b{font-size:12.5px}.alert-item span{display:block;color:var(--muted);font-size:11.5px;margin-top:3px}
+.toolbar{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;display:flex;gap:10px;align-items:center;margin-bottom:14px}.toolbar input,.toolbar select,.field input,.field select,.field textarea,.chatinput input{border:1px solid #ddd5cd;border-radius:9px;padding:10px 11px;background:#fff;color:var(--text);outline:none}.toolbar input{flex:1}.toolbar input:focus,.toolbar select:focus,.field input:focus,.field select:focus,.field textarea:focus,.chatinput input:focus{border-color:#83cbbc;box-shadow:0 0 0 3px rgba(79,174,155,.10)}
+table{width:100%;border-collapse:collapse}th,td{padding:13px 14px;border-bottom:1px solid #eee9e4;text-align:left;font-size:13px}th{background:#fbfaf8;color:#7f756d;font-size:11.5px;text-transform:uppercase;letter-spacing:.025em}tbody tr:hover{background:#fdfbf9}tr:last-child td{border-bottom:0}.empty{padding:38px;text-align:center;color:var(--muted);font-size:13px}
+.status{display:inline-flex;align-items:center;padding:6px 9px;border-radius:999px;font-size:11px;font-weight:800}.status.open{background:var(--yellow-soft);color:#986a23}.status.paid{background:var(--green-soft);color:var(--accent-dark)}.status.late{background:var(--danger-soft);color:#a84949}.status.launch{background:#f0ece8;color:#6f665e}.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#f8f5f2;border:1px solid #eee7e0;border-radius:7px;padding:7px 9px;font-size:11.5px;word-break:break-all;color:#5f574f}.hint{font-size:12px;color:var(--muted);margin-top:10px}
+.report-cards{grid-template-columns:1fr 1fr 1fr}.report-big{font-size:19px;font-weight:800;margin-top:8px}.money{font-size:22px!important}
+.modal{position:fixed;inset:0;background:rgba(55,45,37,.38);display:none;align-items:center;justify-content:center;padding:20px;z-index:30;backdrop-filter:blur(3px)}.modal.open{display:flex}.dialog{width:min(720px,100%);max-height:90vh;overflow:auto;background:white;border-radius:16px;padding:22px;box-shadow:0 20px 70px rgba(65,52,41,.20)}.dialog h2{margin:0 0 4px}.dialog p{margin:0 0 18px;color:var(--muted);font-size:13px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:grid;gap:6px;margin-bottom:13px}.field label{font-size:12.5px;font-weight:700}.field textarea{min-height:80px;resize:vertical}.dialog-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:8px}
+.geninho-launch{position:fixed;right:22px;bottom:22px;width:54px;height:54px;border-radius:50%;border:0;background:var(--purple);display:grid;place-items:center;box-shadow:0 12px 34px rgba(114,72,154,.25);z-index:45}.geninho-dot{width:100%;height:100%;display:grid;place-items:center;color:#fff;font-weight:900;font-size:18px}.geninho{position:fixed;right:22px;bottom:86px;width:min(370px,calc(100vw - 30px));height:500px;max-height:72vh;background:#fff;border:1px solid #ded3e5;border-radius:16px;box-shadow:0 20px 60px rgba(77,59,83,.18);z-index:46;display:none;overflow:hidden}.geninho.open{display:grid;grid-template-rows:auto 1fr auto}.geninho-head{background:linear-gradient(135deg,#efe3f5,#e5f4ef);padding:14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2d9e7}.geninho-title{display:flex;align-items:center;gap:10px}.geninho-avatar{width:34px;height:34px;border-radius:10px;background:var(--purple);color:#fff;display:grid;place-items:center;font-weight:900}.geninho-title small{display:block;color:var(--muted);font-size:11px}.geninho-close{border:0;background:transparent;font-size:20px;color:#6f626e}.messages{padding:14px;overflow:auto;display:grid;align-content:start;gap:9px;background:#fdfbfc}.msg{max-width:86%;padding:9px 11px;border-radius:11px;font-size:12.5px;line-height:1.45}.msg.user{margin-left:auto;background:var(--purple);color:white}.msg.ai{background:white;border:1px solid #e7dfe9}.geninho-suggestions{display:flex;gap:6px;flex-wrap:wrap;padding:0 14px 10px;background:#fdfbfc}.geninho-suggestions button{border:1px solid #e3dae6;background:white;border-radius:999px;padding:6px 9px;font-size:11px;color:#6e536f}.chatinput{display:flex;gap:7px;padding:10px;border-top:1px solid #ebe4ea}.chatinput input{flex:1;min-width:0}.toast{position:fixed;right:22px;bottom:88px;background:var(--sidebar);color:white;padding:10px 13px;border-radius:9px;opacity:0;transform:translateY(8px);transition:.2s;z-index:50}.toast.show{opacity:1;transform:none}
+@media(max-width:980px){.central-grid{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr 1fr}.content{padding:22px}.topbar{padding:16px 22px}}
+@media(max-width:780px){.app{grid-template-columns:1fr}.side{height:auto;position:static}.nav{grid-template-columns:repeat(4,1fr);gap:6px}.nav button{justify-content:center;font-size:12px;padding:10px 8px}.nav button::before{width:24px;height:24px}.brand{margin-bottom:18px}.brand-copy small{display:none}.cards,.report-cards,.central-cards{grid-template-columns:1fr}.topbar{position:static}.panel-head{flex-direction:column}.toolbar{flex-direction:column;align-items:stretch}.table-wrap{overflow:auto}.progress-top{flex-direction:column;gap:4px}.grid2{grid-template-columns:1fr}}
+
+/* Dark mode adaptation - keeps the current layout/design */
+:root{
+  --bg:#0f1115;
+  --sidebar:#181a1f;
+  --sidebar-soft:#252830;
+  --card:#171a20;
+  --text:#f2f4f7;
+  --muted:#9ca3af;
+  --border:#2a2f38;
+  --accent:#53c7b1;
+  --accent-dark:#2fa48e;
+  --purple:#a56bd6;
+  --purple-soft:#2a2133;
+  --yellow:#e8b85d;
+  --yellow-soft:#302716;
+  --green-soft:#162a26;
+  --danger:#e06a72;
+  --danger-soft:#321b1f;
+  --shadow:0 10px 30px rgba(0,0,0,.28);
 }
-body::before{
-  content:'';
-  position:fixed;inset:0;pointer-events:none;opacity:.25;
-  background-image:linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
-  background-size:28px 28px;
-  mask-image:linear-gradient(180deg,rgba(0,0,0,.85),rgba(0,0,0,.2));
-}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer;transition:.18s ease}
-.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
-.side{
-  background:rgba(4,8,18,.72);
-  backdrop-filter:blur(18px);
-  border-right:1px solid rgba(125,150,255,.12);
-  color:#fff;padding:26px 18px;position:sticky;top:0;height:100vh;
-  box-shadow:inset -1px 0 0 rgba(255,255,255,.03);
-}
-.brand{display:flex;gap:12px;align-items:center;font-weight:800;font-size:19px;margin-bottom:34px;letter-spacing:.2px}
-.logo{width:38px;height:38px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;box-shadow:0 8px 25px rgba(124,92,255,.3);color:white}
-.nav{display:grid;gap:8px}
-.nav button{border:1px solid transparent;background:transparent;color:#a9b7d8;text-align:left;padding:12px 13px;border-radius:14px}
-.nav button.active,.nav button:hover{background:linear-gradient(135deg,rgba(124,92,255,.2),rgba(0,209,255,.12));color:#fff;border-color:rgba(124,92,255,.25);box-shadow:var(--glow)}
-.nav small{display:block;color:#5d6f9b;margin:24px 12px 8px;font-size:11px;letter-spacing:1.4px}
-.main{padding:30px 34px;position:relative}
-.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}
-.top h1{margin:0;font-size:28px;letter-spacing:.2px}
-.top p{margin:5px 0 0;color:var(--muted)}
-.actions{display:flex;gap:10px}
-.btn,.mini{border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--text);border-radius:12px;padding:10px 14px;font-weight:700;box-shadow:none}
-.btn:hover,.mini:hover{transform:translateY(-1px);border-color:rgba(124,92,255,.34)}
-.btn.primary{background:linear-gradient(135deg,var(--accent),#4f7cff 58%,var(--accent-2));color:white;border-color:transparent;box-shadow:0 10px 28px rgba(95,89,255,.34)}
-.btn.primary:hover{filter:brightness(1.05)}
-.btn.soft{background:rgba(0,209,255,.08);color:#b7f4ff;border-color:rgba(0,209,255,.18)}
-.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:22px}
-.card,.toolbar,.table-wrap,.dialog,.chatbox,.geninho,.week-item{background:var(--card);border:1px solid var(--border);backdrop-filter:blur(18px);box-shadow:var(--shadow)}
-.card{border-radius:18px;padding:18px;position:relative;overflow:hidden}
-.card::after{content:'';position:absolute;inset:auto -30% -50% auto;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle, rgba(0,209,255,.14), transparent 64%)}
-.card .label{color:var(--muted);font-size:13px}
-.card .num{font-size:30px;font-weight:800;margin-top:6px;letter-spacing:.3px}
-.toolbar{border-radius:18px;padding:13px;display:flex;gap:10px;align-items:center;margin-bottom:14px}
-.toolbar input,.toolbar select,.field input,.field select,.field textarea,.chatinput input,.geninho .chatinput input{border:1px solid rgba(132,156,255,.14);border-radius:12px;padding:11px 12px;background:rgba(8,13,28,.7);color:var(--text);outline:none}
-.toolbar input,.chatinput input,.geninho .chatinput input{flex:1}
-.toolbar input::placeholder,.field textarea::placeholder,.chatinput input::placeholder,.geninho .chatinput input::placeholder{color:#7081aa}
-.toolbar input:focus,.toolbar select:focus,.field input:focus,.field select:focus,.field textarea:focus,.chatinput input:focus,.geninho .chatinput input:focus{border-color:rgba(0,209,255,.42);box-shadow:0 0 0 3px rgba(0,209,255,.08)}
-.table-wrap{border-radius:18px;overflow:hidden}
-table{width:100%;border-collapse:collapse}th,td{padding:14px;border-bottom:1px solid rgba(141,168,255,.08);text-align:left;font-size:14px}th{color:#92a6d2;font-weight:700;background:rgba(255,255,255,.02)}tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.02)}
-.status{display:inline-flex;align-items:center;padding:7px 10px;border-radius:999px;font-size:12px;font-weight:800;border:1px solid transparent}
-.status.open{background:rgba(255,187,51,.14);color:var(--warnText);border-color:rgba(255,187,51,.18)}
-.status.paid{background:rgba(83,244,147,.12);color:var(--successText);border-color:rgba(83,244,147,.15)}
-.status.late{background:rgba(255,87,118,.12);color:var(--dangerText);border-color:rgba(255,87,118,.18)}
-.mini{padding:7px 10px;font-size:12px;font-weight:700;background:rgba(255,255,255,.025)}
-.row-actions{display:flex;gap:6px;flex-wrap:wrap}.empty{padding:40px;text-align:center;color:var(--muted)}.panel{display:none}.panel.active{display:block}
-.modal{position:fixed;inset:0;background:rgba(2,6,16,.68);display:none;align-items:center;justify-content:center;padding:20px;z-index:30;backdrop-filter:blur(10px)}.modal.open{display:flex}
-.dialog{width:min(720px,100%);max-height:90vh;overflow:auto;border-radius:22px;padding:24px;background:var(--card-strong)}.dialog h2{margin:0 0 4px}.dialog p{color:var(--muted);margin:0 0 18px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:grid;gap:6px;margin-bottom:13px}.field label{font-size:13px;font-weight:700;color:#dfe8ff}.field textarea{min-height:80px;resize:vertical}.dialog-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:10px}
-.week-list{display:grid;gap:10px}.week-item{border-radius:16px;padding:15px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}.week-item h4{margin:0 0 4px}.week-item p{margin:0;color:var(--muted);font-size:13px}.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:rgba(0,0,0,.22);border:1px solid rgba(124,92,255,.12);border-radius:10px;padding:9px 10px;font-size:12px;margin-top:8px;word-break:break-all;color:#d8e4ff}
-.toast{position:fixed;right:22px;bottom:88px;background:rgba(4,8,18,.92);color:white;padding:11px 14px;border-radius:12px;opacity:0;transform:translateY(8px);transition:.2s;z-index:50;border:1px solid rgba(124,92,255,.2);box-shadow:var(--shadow)}.toast.show{opacity:1;transform:none}
-.geninho-launch{position:fixed;right:20px;bottom:20px;z-index:45;border:1px solid rgba(124,92,255,.28);background:rgba(9,14,28,.76);color:transparent;border-radius:999px;padding:0;width:58px;height:58px;box-shadow:0 12px 35px rgba(3,8,18,.42),0 0 0 1px rgba(255,255,255,.02);display:grid;place-items:center;backdrop-filter:blur(18px)}
-.geninho-dot{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:white;display:grid;place-items:center;font-size:15px}
-.geninho{position:fixed;right:24px;bottom:88px;width:min(360px,calc(100vw - 28px));height:500px;max-height:70vh;border-radius:22px;z-index:46;display:none;overflow:hidden;background:var(--card-strong)}.geninho.open{display:grid;grid-template-rows:auto 1fr auto}.geninho-head{background:linear-gradient(135deg,rgba(124,92,255,.22),rgba(0,209,255,.1));padding:14px 15px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(141,168,255,.08)}.geninho-title{display:flex;align-items:center;gap:10px}.geninho-avatar{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;font-weight:900}.geninho-title small{display:block;color:#a8b8dd}.geninho-close{border:0;background:transparent;color:#fff;font-size:20px}.messages{padding:14px;overflow:auto;display:grid;align-content:start;gap:9px}.msg{max-width:86%;padding:9px 11px;border-radius:12px;font-size:13px;line-height:1.4}.msg.user{margin-left:auto;background:linear-gradient(135deg,var(--accent),#498fff)}.msg.ai{background:rgba(255,255,255,.045);border:1px solid rgba(141,168,255,.08)}.chatinput{display:flex;gap:7px;padding:10px;border-top:1px solid rgba(141,168,255,.08)}
-@media(max-width:900px){.app{grid-template-columns:1fr}.side{height:auto;position:static}.nav{grid-template-columns:repeat(4,1fr)}.main{padding:20px}.cards{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
-@media(max-width:560px){.cards{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.toolbar{flex-direction:column;align-items:stretch}.table-wrap{overflow:auto}.nav{grid-template-columns:1fr 1fr}}
+body{background:radial-gradient(circle at 78% 8%,rgba(165,107,214,.08),transparent 25%),linear-gradient(180deg,#0d0f13 0%,#11141a 100%);color:var(--text)}
+.side{background:linear-gradient(180deg,#15181d 0%, #13161c 100%);color:#f5f1ed;border-right:1px solid #262a31}
+.logo{color:#0c2924;box-shadow:0 6px 18px rgba(83,199,177,.15)}
+.nav button{color:#c9d0d9}.nav button::before{background:#20242c;color:#97a0ad}.nav button.active,.nav button:hover{background:#21262e;color:#fff}.school-tag{background:linear-gradient(180deg,#1b1f26 0%, #1a1e24 100%)}.school-tag small{color:#8e959f}
+.topbar{background:rgba(15,17,21,.92);border-color:var(--border)}
+.top-avatar{background:#292d35;color:#e8e9ec}.menu-toggle{background:#1b1f26;color:#f2f4f7;border-color:#2a2f38}
+.btn,.mini{background:#1b1f26;color:var(--text);border-color:var(--border)}.btn:hover,.mini:hover{border-color:#46505c}.btn.primary{background:#2b3038;border-color:#2b3038}.btn.soft{background:#16312b;border-color:#245a4e;color:#89dfce}
+.ai-brief{background:linear-gradient(135deg,rgba(56,39,70,.92),rgba(20,52,46,.88));border-color:#4a3b55}.ai-icon::after{border-color:#161920}.ai-actions .sub{background:#1b1f26;color:#c99be9;border-color:#4a3d55}
+.card,.progress-card,.table-wrap,.toolbar,.dialog,.geninho,.month-board,.month-col,.report-box{background:#171a20!important;border-color:var(--border)!important;color:var(--text)}
+.card .label,.card .desc,.panel-head p,.topbar p,.topbar-right,.empty,.month-col p{color:var(--muted)}
+.toolbar input,.toolbar select,.field input,.field select,.field textarea,.chatinput input,.geninho .chatinput input{background:#101318!important;color:var(--text)!important;border-color:#303640!important}.toolbar input::placeholder,.field textarea::placeholder,.chatinput input::placeholder,.geninho .chatinput input::placeholder{color:#6f7784}
+th{background:#1b1f26!important;color:#aeb6c2!important}td,th{border-color:#292e36!important}tbody tr:hover{background:#1c2027!important}
+.week-item,.month-item,.list-row{background:#1a1e25!important;border-color:#2c323b!important;color:var(--text)!important}.code{background:#101318!important;border-color:#303640!important;color:#dce3ec!important}
+.status.open{background:#342b18!important;color:#f2cb72!important;border-color:#5a4720!important}.status.paid{background:#153129!important;color:#8de0bf!important;border-color:#245745!important}.status.late{background:#351b20!important;color:#f39aa5!important;border-color:#5c2b34!important}.status.launch{background:#272b31!important;color:#c2c7cf!important;border-color:#3b414b!important}
+.modal{background:rgba(3,5,8,.72)}.dialog{background:#171a20!important}
+.geninho-launch{background:#1a1d23!important;border-color:#4c3d58!important}.geninho{background:#171a20!important}.geninho-head{background:linear-gradient(135deg,#382746,#1b312e)!important}.msg.ai{background:#20242b!important;border-color:#2d333c!important}.msg.user{background:linear-gradient(135deg,#8d5bc0,#3ea995)!important}
+.toast{background:#20242b!important;color:#fff!important;border-color:#343a44!important}
+hr{border-color:#2a2f38!important}
+/* Correções de contraste no painel lateral "Atenção do mês" */
+.side-card{background:#171a20!important;border-color:#2a2f38!important;color:#f2f4f7!important}
+.alert-card h3{color:#f2f4f7!important}
+.alert-card p{color:#9ca3af!important}
+.alert-item{background:#1b1f26!important;border-color:#303640!important}
+.alert-item b{color:#f2f4f7!important}
+.alert-item span{color:#9ca3af!important}
+.section-title strong{color:#f2f4f7!important}
+.section-title button{color:#69d5c1!important}
 </style>
 </head>
 <body>
 <div class="app">
   <aside class="side">
-    <div class="brand"><div class="logo">▣</div>Central de Boletos</div>
-    <div class="nav">
-      <button class="active" data-panel="central">▦ &nbsp; Central</button>
-      <button data-panel="buscar">⌕ &nbsp; Buscar boleto</button>
-      <button data-panel="semana">⌁ &nbsp; Boletos da semana</button>
-      <button data-panel="relatorios">▤ &nbsp; Relatórios</button>
-      <button data-panel="comprovantes">✓ &nbsp; Comprovantes</button>
-      <small>ORGANIZAÇÃO</small>
-      <button id="backupBtn">⇩ &nbsp; Exportar dados</button>
+    <div class="brand">
+      <div class="logo">CB</div>
+      <div class="brand-copy">
+        <strong>Central de Boletos</strong>
+        <small>Financeiro escolar</small>
+      </div>
+    </div>
+
+    <div class="nav-wrap">
+      <small class="nav-label">Menu principal</small>
+      <div class="nav">
+        <button class="active" data-panel="central" data-icon="◉">Central</button>
+        <button data-panel="mes" data-icon="▣">Boletos do mês</button>
+        <button data-panel="buscar" data-icon="⌕">Buscar boleto</button>
+        <button data-panel="relatorios" data-icon="▤">Relatórios</button>
+      </div>
+    </div>
+
+    <div class="menu-geninho">
+      <div class="menu-geninho-top">
+        <div class="menu-geninho-icon">G</div>
+        <div>
+          <strong>Geninho</strong>
+          <span>Assistente de boletos</span>
+        </div>
+      </div>
+      <p id="geninhoBrief">Quando conectarmos sua planilha, eu vou criar automaticamente todos os boletos previstos do mês.</p>
+      <div class="menu-geninho-actions">
+        <button class="main" id="openGeninhoBrief">Falar com o Geninho</button>
+        <button class="sub" data-go="mes">Ver boletos do mês</button>
+      </div>
     </div>
   </aside>
+
   <main class="main">
-    <section id="central" class="panel active">
-      <div class="top"><div><h1>Central</h1><p>O que precisa da sua atenção nesta semana.</p></div><div class="actions"><button class="btn primary" id="newBtn">+ Enviar boleto</button></div></div>
-      <div class="cards"><div class="card"><div class="label">Boletos em aberto esta semana</div><div class="num" id="cWeek">0</div></div><div class="card"><div class="label">Vencem hoje</div><div class="num" id="cToday">0</div></div></div>
-      <div class="table-wrap"><div style="padding:18px 18px 8px"><b>Próximos boletos</b></div><div id="recentList" class="week-list" style="padding:10px 14px 16px"></div></div>
-    </section>
-    <section id="buscar" class="panel">
-      <div class="top"><div><h1>Buscar boleto</h1><p>Encontre qualquer boleto já cadastrado.</p></div><button class="btn primary" id="newBtnSearch">+ Enviar boleto</button></div>
-      <div class="toolbar"><input id="search" placeholder="Buscar fornecedor ou código..."/><select id="monthFilter"></select><select id="statusFilter"><option value="all">Todos os status</option><option value="open">A pagar</option><option value="paid">Pago</option></select></div>
-      <div class="table-wrap"><table><thead><tr><th>Fornecedor</th><th>Vencimento</th><th>Linha digitável</th><th>Boleto</th><th>Status</th><th>Comprovante</th><th>Ações</th></tr></thead><tbody id="tbody"></tbody></table><div class="empty" id="empty">Nenhum boleto cadastrado ainda.</div></div>
-    </section>
-    <section id="semana" class="panel"><div class="top"><div><h1>Boletos da semana</h1><p id="weekRange">—</p></div><div class="actions"><button class="btn primary" id="shareBtn">Gerar link da semana</button></div></div><div class="week-list" id="weekList"></div><div class="hint">Nesta versão o botão gera a prévia. O link público será ativado quando conectarmos banco online.</div></section>
-    <section id="relatorios" class="panel"><div class="top"><div><h1>Relatórios</h1><p>Consulte apenas pagamentos realizados por período.</p></div></div><div class="toolbar"><select id="reportRange"><option value="month">Mês específico</option><option value="3">Últimos 3 meses</option><option value="6">Últimos 6 meses</option><option value="year">Ano inteiro</option></select><select id="reportMonth"></select><select id="reportYear"></select></div><div class="cards"><div class="card"><div class="label">Período</div><div class="num" id="rPeriod" style="font-size:20px">—</div></div><div class="card"><div class="label">Total pago</div><div class="num" id="rTotal">R$ 0,00</div></div></div><div class="table-wrap"><table><thead><tr><th>Fornecedor</th><th>Vencimento</th><th>Valor</th><th>Boleto</th><th>Comprovante</th></tr></thead><tbody id="reportBody"></tbody></table><div class="empty" id="reportEmpty">Nenhum pagamento neste período.</div></div></section>
-    <section id="comprovantes" class="panel"><div class="top"><div><h1>Comprovantes</h1><p>Busque rapidamente os comprovantes já arquivados.</p></div></div><div class="toolbar"><input id="receiptSearch" placeholder="Buscar fornecedor..."/><select id="receiptMonth"></select></div><div class="table-wrap"><table><thead><tr><th>Fornecedor</th><th>Vencimento</th><th>Valor</th><th>Boleto</th><th>Comprovante</th></tr></thead><tbody id="receiptBody"></tbody></table><div class="empty" id="receiptEmpty">Nenhum comprovante encontrado.</div></div></section>
+    <div class="topbar">
+      <div class="topbar-left"><button class="menu-toggle" id="menuToggle" aria-label="Fechar menu">☰</button><div><h1 id="topTitle">Central</h1><p id="centralMonthLabel">Visão geral do mês</p></div></div>
+      <div class="topbar-right"><div style="text-align:right"><strong style="display:block;color:var(--text)">Financeiro</strong><span>Central de boletos</span></div><div class="top-avatar">GL</div></div>
+    </div>
+    <div class="content">
+      <section id="central" class="panel active">
+        <div class="panel-head"><div><h2>Visão geral</h2><p>O que precisa da sua atenção agora, sem perder de vista o mês inteiro.</p></div></div>
+
+        <div class="cards central-cards">
+          <div class="card launch"><div class="label">A lançar</div><div class="num" id="cLaunch">0</div><div class="desc">previstos no mês, aguardando PDF</div></div>
+          <div class="card open"><div class="label">Da semana</div><div class="num" id="cWeek">0</div><div class="desc">boletos com vencimento nesta semana</div></div>
+        </div>
+
+        <div class="central-grid">
+          <div class="table-wrap">
+            <div class="section-title"><strong>Próximos vencimentos da semana</strong><button data-go="mes">Ver todos os boletos do mês →</button></div>
+            <div id="recentList" class="week-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="mes" class="panel">
+        <div class="panel-head"><div><h2>Boletos do mês</h2><p>Todos os boletos previstos: os que ainda vão chegar, os que já chegaram e os pagos.</p></div><div class="actions"><button class="btn primary" id="newMonthBtn">+ Adicionar boleto</button></div></div>
+        <div class="toolbar"><select id="monthView"></select></div>
+        <div class="cards">
+          <div class="card launch"><div class="label">A lançar</div><div class="num" id="mToLaunch">0</div><div class="desc">aguardando PDF</div></div>
+          <div class="card open"><div class="label">A pagar</div><div class="num" id="mOpen">0</div><div class="desc">boleto já anexado</div></div>
+          <div class="card paid"><div class="label">Pago</div><div class="num" id="mPaid">0</div><div class="desc">com pagamento concluído</div></div>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Fornecedor</th><th>Vencimento</th><th>Valor</th><th>Situação</th><th>Boleto</th><th>Comprovante</th><th>Ações</th></tr></thead><tbody id="monthBody"></tbody></table><div class="empty" id="monthEmpty">Nenhum boleto previsto para este mês.</div></div>
+        <div class="hint">A planilha de vencimentos será a base para o Geninho criar automaticamente os registros “A lançar” de cada mês.</div>
+      </section>
+
+      <section id="buscar" class="panel">
+        <div class="panel-head"><div><h2>Buscar boleto</h2><p>Encontre rapidamente qualquer boleto já cadastrado.</p></div><div class="actions"><button class="btn primary" id="newBtnSearch">+ Enviar boleto</button></div></div>
+        <div class="toolbar"><input id="search" placeholder="Buscar fornecedor ou linha digitável..."/><select id="monthFilter"></select><select id="statusFilter"><option value="all">Todos os status</option><option value="open">A pagar</option><option value="paid">Pago</option></select></div>
+        <div class="table-wrap"><table><thead><tr><th>Fornecedor</th><th>Vencimento</th><th>Linha digitável</th><th>Boleto</th><th>Status</th><th>Comprovante</th><th>Ações</th></tr></thead><tbody id="tbody"></tbody></table><div class="empty" id="empty">Nenhum boleto encontrado.</div></div>
+      </section>
+
+      <section id="relatorios" class="panel">
+        <div class="panel-head"><div><h2>Relatórios</h2><p>Consulte somente o que foi pago e abra boleto + comprovante juntos.</p></div></div>
+        <div class="toolbar"><select id="reportRange"><option value="month">Mês específico</option><option value="3">Últimos 3 meses</option><option value="6">Últimos 6 meses</option><option value="year">Ano inteiro</option></select><select id="reportMonth"></select><select id="reportYear"></select></div>
+        <div class="cards report-cards"><div class="card"><div class="label">Período</div><div class="report-big" id="rPeriod">—</div></div><div class="card paid"><div class="label">Pagamentos</div><div class="num" id="rCount">0</div></div><div class="card paid"><div class="label">Total pago</div><div class="num money" id="rTotal">R$ 0,00</div></div></div>
+        <div class="table-wrap"><table><thead><tr><th>Fornecedor</th><th>Vencimento</th><th>Valor</th><th>Boleto</th><th>Comprovante</th></tr></thead><tbody id="reportBody"></tbody></table><div class="empty" id="reportEmpty">Nenhum pagamento encontrado neste período.</div></div>
+      </section>
+    </div>
   </main>
 </div>
-<button class="geninho-launch" id="geninhoLaunch"><span class="geninho-dot">✦</span></button>
-<div class="geninho" id="geninhoChat"><div class="geninho-head"><div class="geninho-title"><div class="geninho-avatar">G</div><div><strong>Geninho</strong><small>Assistente da Central</small></div></div><button class="geninho-close" id="geninhoClose">×</button></div><div class="messages" id="messages"><div class="msg ai">Oi! Eu sou o <b>Geninho</b> ✦ Posso consultar os boletos cadastrados.</div></div><div class="chatinput"><input id="chatText" placeholder="Fale com o Geninho..."/><button class="btn primary" id="sendChat">Enviar</button></div></div>
-<div class="modal" id="modal"><div class="dialog"><h2>Novo boleto</h2><p>Cadastre os dados e anexe o PDF.</p><form id="form"><div class="grid2"><div class="field"><label>Fornecedor</label><input id="supplier" required /></div><div class="field"><label>Vencimento</label><input id="due" type="date" required /></div></div><div class="grid2"><div class="field"><label>Valor</label><input id="amount" inputmode="decimal" placeholder="0,00" /></div><div class="field"><label>Status</label><select id="status"><option value="open">A pagar</option><option value="paid">Pago</option></select></div></div><div class="field"><label>Linha digitável</label><input id="barcode" /></div><div class="grid2"><div class="field"><label>PDF do boleto</label><input id="billFile" type="file" accept="application/pdf"/></div><div class="field"><label>Comprovante</label><input id="receiptFile" type="file" accept="application/pdf,image/*"/></div></div><div class="field"><label>Observação</label><textarea id="note"></textarea></div><div class="dialog-actions"><button type="button" class="btn" id="cancel">Cancelar</button><button class="btn primary">Salvar boleto</button></div></form></div></div>
-<div class="modal" id="shareModal"><div class="dialog"><h2>Prévia do link da semana</h2><p>É assim que seu chefe verá os boletos.</p><div id="sharePreview" class="week-list"></div><div class="dialog-actions"><button class="btn" id="closeShare">Fechar</button><button class="btn soft" id="copySummary">Copiar resumo</button></div></div></div>
+
+<button class="geninho-launch" id="geninhoLaunch" aria-label="Abrir Geninho"><span class="geninho-dot">G</span></button>
+<div class="geninho" id="geninhoChat" aria-label="Chat do Geninho"><div class="geninho-head"><div class="geninho-title"><div class="geninho-avatar">G</div><div><strong>Geninho</strong><small>Assistente da Central de Boletos</small></div></div><button class="geninho-close" id="geninhoClose" aria-label="Fechar">×</button></div><div><div class="messages" id="messages"><div class="msg ai">Oi! Eu sou o <b>Geninho</b>. Posso consultar os boletos cadastrados e, na próxima etapa, vou ler sua planilha e organizar o mês automaticamente.</div></div><div class="geninho-suggestions"><button data-geninho="Quais boletos vencem esta semana?">Esta semana</button><button data-geninho="Quais estão sem PDF?">A lançar</button><button data-geninho="Quais pagos estão sem comprovante?">Comprovantes</button></div></div><div class="chatinput"><input id="chatText" placeholder="Fale com o Geninho..."/><button class="btn primary" id="sendChat">Enviar</button></div></div>
+
+<div class="modal" id="modal"><div class="dialog"><h2>Novo boleto</h2><p>Você pode cadastrar uma previsão sem PDF; ela ficará como “A lançar”.</p><form id="form"><div class="grid2"><div class="field"><label>Fornecedor</label><input id="supplier" required placeholder="Ex.: ENEL"/></div><div class="field"><label>Vencimento</label><input id="due" type="date" required/></div></div><div class="field"><label>Linha digitável / código do boleto</label><input id="barcode" placeholder="Cole ou digite o código"/></div><div class="grid2"><div class="field"><label>Valor do boleto</label><input id="amount" inputmode="decimal" placeholder="Ex.: 1250,90"/></div><div class="field"><label>Status</label><select id="status"><option value="open">A pagar</option><option value="paid">Pago</option></select></div></div><div class="field"><label>PDF do boleto</label><input id="billFile" type="file" accept="application/pdf"/></div><div class="field"><label>Comprovante (opcional)</label><input id="receiptFile" type="file" accept="application/pdf,image/*"/></div><div class="field"><label>Observação</label><textarea id="note" placeholder="Opcional"></textarea></div><div class="dialog-actions"><button type="button" class="btn" id="cancel">Cancelar</button><button class="btn primary">Salvar boleto</button></div></form></div></div>
 <div class="toast" id="toast"></div>
 <script>
-const DB_NAME='central_boletos_db',DB_VERSION=1;let db,rows=[];const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],pt=new Intl.DateTimeFormat('pt-BR'),brl=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
-function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1800)}
+const DB_NAME='central_boletos_db', DB_VERSION=1; let db; let rows=[];
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const appEl=document.querySelector('.app');
+function setSidebarCollapsed(v){appEl.classList.toggle('sidebar-collapsed',v);localStorage.setItem('cb_sidebar_collapsed',v?'1':'0')}
+if(localStorage.getItem('cb_sidebar_collapsed')==='1') appEl.classList.add('sidebar-collapsed');
+const pt=new Intl.DateTimeFormat('pt-BR');
+const brl=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1800)}
 function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB_NAME,DB_VERSION);r.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains('boletos'))d.createObjectStore('boletos',{keyPath:'id'});if(!d.objectStoreNames.contains('files'))d.createObjectStore('files',{keyPath:'id'})};r.onsuccess=()=>{db=r.result;res(db)};r.onerror=()=>rej(r.error)})}
-function tx(s,m='readonly'){return db.transaction(s,m).objectStore(s)}
-function getAll(){return new Promise((res,rej)=>{const r=tx('boletos').getAll();r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
-function putRow(x){return new Promise((res,rej)=>{const r=tx('boletos','readwrite').put(x);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
-function delRow(id){return new Promise((res,rej)=>{const r=tx('boletos','readwrite').delete(id);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
-function putFile(id,file){return new Promise((res,rej)=>{const r=tx('files','readwrite').put({id,name:file.name,type:file.type,blob:file});r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
-function getFile(id){return new Promise((res,rej)=>{const r=tx('files').get(id);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
-function parseDate(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)}function isoDate(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}function amountNum(v){if(typeof v==='number')return v;return Number(String(v||'0').replace(/\./g,'').replace(',','.'))||0}function monthKey(r){return r.due.slice(0,7)}function monthLabel(k){const [y,m]=k.split('-');return new Date(y,m-1,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}
-function weekBounds(){const n=new Date(),day=n.getDay(),diff=(day===0?-6:1-day),s=new Date(n);s.setDate(n.getDate()+diff);s.setHours(0,0,0,0);const e=new Date(s);e.setDate(s.getDate()+6);e.setHours(23,59,59,999);return{start:s,end:e}}function isWeek(r){const d=parseDate(r.due),{start,end}=weekBounds();return d>=start&&d<=end}
-function fillFilters(){const keys=[...new Set(rows.map(monthKey))].sort().reverse();const now=`${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}`;if(!keys.includes(now))keys.unshift(now);const all='<option value="all">Todos os meses</option>'+keys.map(k=>`<option value="${k}">${monthLabel(k)}</option>`).join('');$('#monthFilter').innerHTML=all;$('#receiptMonth').innerHTML=all;$('#reportMonth').innerHTML=keys.map(k=>`<option value="${k}">${monthLabel(k)}</option>`).join('');const years=[...new Set(rows.map(r=>r.due.slice(0,4)).concat(String(new Date().getFullYear())))].sort().reverse();$('#reportYear').innerHTML=years.map(y=>`<option>${y}</option>`).join('')}
-function statusHTML(r){if(r.status==='paid')return '<span class="status paid">Pago</span>';if(parseDate(r.due)<new Date(new Date().setHours(0,0,0,0)))return '<span class="status late">Vencido</span>';return '<span class="status open">A pagar</span>'}
-async function downloadFile(id){const f=await getFile(id);if(!f)return toast('Arquivo não encontrado');const u=URL.createObjectURL(f.blob),a=document.createElement('a');a.href=u;a.download=f.name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}async function copyCode(id){const r=rows.find(x=>x.id===id);if(r?.barcode){await navigator.clipboard.writeText(r.barcode);toast('Linha digitável copiada')}}
-async function addReceipt(id){const inp=document.createElement('input');inp.type='file';inp.accept='application/pdf,image/*';inp.onchange=async()=>{const f=inp.files[0];if(!f)return;const r=rows.find(x=>x.id===id),fid='receipt_'+crypto.randomUUID();await putFile(fid,f);r.receiptId=fid;r.receiptName=f.name;r.status='paid';r.paidAt=new Date().toISOString();await putRow(r);await refresh();toast('Comprovante anexado')};inp.click()}async function togglePaid(id){const r=rows.find(x=>x.id===id);r.status=r.status==='paid'?'open':'paid';r.paidAt=r.status==='paid'?new Date().toISOString():null;await putRow(r);await refresh()}async function removeRow(id){if(!confirm('Excluir este boleto?'))return;await delRow(id);await refresh()}
-function weekCard(r){return `<div class="week-item"><div><h4>${r.supplier}</h4><p>Vencimento: ${pt.format(parseDate(r.due))} · ${brl.format(amountNum(r.amount))}</p>${r.barcode?`<div class="code">${r.barcode}</div>`:''}</div><div class="row-actions">${r.barcode?`<button class="mini" onclick="copyCode('${r.id}')">Copiar código</button>`:''}${r.billId?`<button class="mini" onclick="downloadFile('${r.billId}')">Baixar PDF</button>`:''}</div></div>`}
-function render(){fillFilters();const q=$('#search').value.toLowerCase(),mf=$('#monthFilter').value,sf=$('#statusFilter').value;const filtered=rows.filter(r=>(!q||r.supplier.toLowerCase().includes(q)||(r.barcode||'').includes(q))&&(mf==='all'||monthKey(r)===mf)&&(sf==='all'||r.status===sf));$('#tbody').innerHTML=filtered.map(r=>`<tr><td><b>${r.supplier}</b></td><td>${pt.format(parseDate(r.due))}</td><td>${r.barcode?`<button class="mini" onclick="copyCode('${r.id}')">Copiar</button>`:'—'}</td><td>${r.billId?`<button class="mini" onclick="downloadFile('${r.billId}')">PDF</button>`:'—'}</td><td>${statusHTML(r)}</td><td>${r.receiptId?`<button class="mini" onclick="downloadFile('${r.receiptId}')">Abrir</button>`:'—'}</td><td><div class="row-actions"><button class="mini" onclick="togglePaid('${r.id}')">${r.status==='paid'?'Reabrir':'Pago'}</button><button class="mini" onclick="addReceipt('${r.id}')">+ Comprovante</button><button class="mini" onclick="removeRow('${r.id}')">Excluir</button></div></td></tr>`).join('');$('#empty').style.display=filtered.length?'none':'block';const week=rows.filter(r=>isWeek(r)&&r.status==='open');$('#cWeek').textContent=week.length;$('#cToday').textContent=rows.filter(r=>r.status==='open'&&r.due===isoDate(new Date())).length;$('#recentList').innerHTML=week.length?week.sort((a,b)=>a.due.localeCompare(b.due)).map(weekCard).join(''):'<div class="empty">Nenhum boleto em aberto nesta semana.</div>';const{start,end}=weekBounds();$('#weekRange').textContent=`${pt.format(start)} a ${pt.format(end)}`;$('#weekList').innerHTML=rows.filter(isWeek).sort((a,b)=>a.due.localeCompare(b.due)).map(weekCard).join('')||'<div class="empty card">Nenhum boleto nesta semana.</div>';renderReports();renderReceipts()}
-function reportRows(){const paid=rows.filter(r=>r.status==='paid'),mode=$('#reportRange').value,now=new Date();let start,end,label;if(mode==='month'){const[y,m]=$('#reportMonth').value.split('-').map(Number);start=new Date(y,m-1,1);end=new Date(y,m,0,23,59,59);label=monthLabel($('#reportMonth').value)}else if(mode==='year'){const y=Number($('#reportYear').value);start=new Date(y,0,1);end=new Date(y,11,31,23,59,59);label=String(y)}else{const n=Number(mode);end=new Date(now.getFullYear(),now.getMonth()+1,0,23,59,59);start=new Date(now.getFullYear(),now.getMonth()-n+1,1);label=`Últimos ${n} meses`}return{list:paid.filter(r=>{const d=parseDate(r.due);return d>=start&&d<=end}),label}}
-function renderReports(){const{list,label}=reportRows();$('#rPeriod').textContent=label;$('#rTotal').textContent=brl.format(list.reduce((s,r)=>s+amountNum(r.amount),0));$('#reportBody').innerHTML=list.map(r=>`<tr><td><b>${r.supplier}</b></td><td>${pt.format(parseDate(r.due))}</td><td>${brl.format(amountNum(r.amount))}</td><td>${r.billId?`<button class="mini" onclick="downloadFile('${r.billId}')">Abrir boleto</button>`:'—'}</td><td>${r.receiptId?`<button class="mini" onclick="downloadFile('${r.receiptId}')">Abrir comprovante</button>`:'—'}</td></tr>`).join('');$('#reportEmpty').style.display=list.length?'none':'block';$('#reportMonth').style.display=$('#reportRange').value==='month'?'block':'none';$('#reportYear').style.display=$('#reportRange').value==='year'?'block':'none'}
-function renderReceipts(){const q=$('#receiptSearch').value.toLowerCase(),mf=$('#receiptMonth').value,list=rows.filter(r=>r.receiptId&&(!q||r.supplier.toLowerCase().includes(q))&&(mf==='all'||monthKey(r)===mf));$('#receiptBody').innerHTML=list.map(r=>`<tr><td><b>${r.supplier}</b></td><td>${pt.format(parseDate(r.due))}</td><td>${brl.format(amountNum(r.amount))}</td><td>${r.billId?`<button class="mini" onclick="downloadFile('${r.billId}')">Abrir boleto</button>`:'—'}</td><td><button class="mini" onclick="downloadFile('${r.receiptId}')">Abrir comprovante</button></td></tr>`).join('');$('#receiptEmpty').style.display=list.length?'none':'block'}
+function txStore(name,mode='readonly'){return db.transaction(name,mode).objectStore(name)}
+function getAll(){return new Promise((res,rej)=>{const r=txStore('boletos').getAll();r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+function putRow(x){return new Promise((res,rej)=>{const r=txStore('boletos','readwrite').put(x);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
+function delRow(id){return new Promise((res,rej)=>{const r=txStore('boletos','readwrite').delete(id);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
+function putFile(id,file){return new Promise((res,rej)=>{const r=txStore('files','readwrite').put({id,blob:file,name:file.name,type:file.type});r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
+function getFile(id){return new Promise((res,rej)=>{const r=txStore('files').get(id);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+function delFile(id){if(!id)return;txStore('files','readwrite').delete(id)}
+function isoDate(d){return d.toISOString().slice(0,10)}
+function parseDate(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)}
+function weekBounds(){const now=new Date();const day=now.getDay();const diff=day===0?-6:1-day;const start=new Date(now);start.setHours(0,0,0,0);start.setDate(now.getDate()+diff);const end=new Date(start);end.setDate(start.getDate()+6);end.setHours(23,59,59,999);return {start,end}}
+function isWeek(r){const d=parseDate(r.due),{start,end}=weekBounds();return d>=start&&d<=end}
+const monthNames=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+function monthKey(r){const d=parseDate(r.due);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
+function monthLabel(key){const [y,m]=key.split('-').map(Number);return `${monthNames[m-1]} ${y}`}
+function fillMonths(){const set=new Set(rows.map(monthKey));const now=new Date();const current=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;set.add(current);const keys=[...set].sort().reverse();const opts=['<option value="all">Todos os meses</option>',...keys.map(k=>`<option value="${k}">${monthLabel(k)}</option>`)].join('');const curMF=$('#monthFilter').value;$('#monthFilter').innerHTML=opts;if(curMF&&[...$('#monthFilter').options].some(o=>o.value===curMF))$('#monthFilter').value=curMF;if($('#monthView')){const old=$('#monthView').value||current;$('#monthView').innerHTML=keys.map(k=>`<option value="${k}">${monthLabel(k)}</option>`).join('');$('#monthView').value=keys.includes(old)?old:current}fillReportSelectors(keys)}
+function fillReportSelectors(keys){if(!$('#reportYear'))return;const years=[...new Set([...keys.map(k=>k.slice(0,4)),String(new Date().getFullYear())])].sort().reverse();const oldY=$('#reportYear').value||String(new Date().getFullYear()),oldM=$('#reportMonth').value||`${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}`;$('#reportYear').innerHTML=years.map(y=>`<option value="${y}">${y}</option>`).join('');$('#reportYear').value=years.includes(oldY)?oldY:years[0];$('#reportMonth').innerHTML=keys.map(k=>`<option value="${k}">${monthLabel(k)}</option>`).join('');if(keys.includes(oldM))$('#reportMonth').value=oldM}
+function amountNum(v){if(typeof v==='number')return v;const x=String(v||'').replace(/\./g,'').replace(',','.').replace(/[^0-9.-]/g,'');return Number(x)||0}
+function statusHTML(r){const late=r.status==='open'&&parseDate(r.due)<new Date(new Date().setHours(0,0,0,0));if(r.status==='paid')return '<span class="status paid">Pago</span>';if(late)return '<span class="status late">Vencido</span>';return '<span class="status open">A pagar</span>'}
+function monthStatusHTML(r){if(r.status==='paid')return '<span class="status paid">Pago</span>';if(!r.billId)return '<span class="status launch">A lançar</span>';return statusHTML(r)}
+function shortCode(c){if(!c)return '—';return c.length>22?c.slice(0,18)+'…':c}
+async function downloadFile(fileId){if(!fileId)return toast('Arquivo não anexado');const f=await getFile(fileId);if(!f)return toast('Arquivo não encontrado');const u=URL.createObjectURL(f.blob),a=document.createElement('a');a.href=u;a.download=f.name||'arquivo.pdf';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+async function addBill(id){const inp=document.createElement('input');inp.type='file';inp.accept='application/pdf';inp.onchange=async()=>{const file=inp.files[0];if(!file)return;const r=rows.find(x=>x.id===id);const fid='bill_'+crypto.randomUUID();await putFile(fid,file);if(r.billId)delFile(r.billId);r.billId=fid;r.billName=file.name;await putRow(r);await refresh();toast('Boleto anexado')};inp.click()}
+async function addReceipt(id){const inp=document.createElement('input');inp.type='file';inp.accept='application/pdf,image/*';inp.onchange=async()=>{const file=inp.files[0];if(!file)return;const r=rows.find(x=>x.id===id);const fid='receipt_'+crypto.randomUUID();await putFile(fid,file);if(r.receiptId)delFile(r.receiptId);r.receiptId=fid;r.receiptName=file.name;r.status='paid';r.paidAt=r.paidAt||new Date().toISOString();await putRow(r);await refresh();toast('Comprovante anexado e boleto marcado como pago')};inp.click()}
+async function togglePaid(id){const r=rows.find(x=>x.id===id);r.status=r.status==='paid'?'open':'paid';r.paidAt=r.status==='paid'?(r.paidAt||new Date().toISOString()):null;await putRow(r);await refresh();toast(r.status==='paid'?'Marcado como pago':'Reaberto')}
+async function removeRow(id){if(!confirm('Excluir este boleto?'))return;const r=rows.find(x=>x.id===id);delFile(r.billId);delFile(r.receiptId);await delRow(id);await refresh()}
+function render(){fillMonths();const q=$('#search').value.toLowerCase().trim(),mf=$('#monthFilter').value,sf=$('#statusFilter').value;const filtered=rows.filter(r=>(!q||r.supplier.toLowerCase().includes(q)||(r.barcode||'').includes(q))&&(mf==='all'||monthKey(r)===mf)&&(sf==='all'||r.status===sf));$('#tbody').innerHTML=filtered.map(r=>`<tr><td><b>${esc(r.supplier)}</b></td><td>${pt.format(parseDate(r.due))}</td><td>${r.barcode?`<button class="mini" onclick="copyCode('${r.id}')">${esc(shortCode(r.barcode))}</button>`:'—'}</td><td>${r.billId?`<button class="mini" onclick="downloadFile('${r.billId}')">Baixar PDF</button>`:`<button class="mini" onclick="addBill('${r.id}')">+ Anexar PDF</button>`}</td><td>${statusHTML(r)}</td><td>${r.receiptId?`<button class="mini" onclick="downloadFile('${r.receiptId}')">Ver comprovante</button>`:'—'}</td><td><div class="row-actions">${!r.billId?`<button class="mini" onclick="addBill('${r.id}')">+ Anexar boleto</button>`:''}<button class="mini" onclick="togglePaid('${r.id}')">${r.status==='paid'?'Reabrir':'Marcar pago'}</button><button class="mini" onclick="addReceipt('${r.id}')">+ Comprovante</button><button class="mini" onclick="removeRow('${r.id}')">Excluir</button></div></td></tr>`).join('');$('#empty').style.display=filtered.length?'none':'block';
+const now=new Date(),currentKey=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`,currentRows=rows.filter(r=>monthKey(r)===currentKey);
+const cLaunch=currentRows.filter(r=>r.status!=='paid'&&!r.billId).length,cOpen=currentRows.filter(r=>r.status==='open'&&r.billId).length,cPaid=currentRows.filter(r=>r.status==='paid').length,cWeek=rows.filter(r=>r.status==='open'&&isWeek(r)).length,total=currentRows.length||1;
+$('#cLaunch').textContent=cLaunch;$('#cWeek').textContent=cWeek;
+$('#centralMonthLabel').textContent=`${monthLabel(currentKey)} · visão geral do mês`;
+const upcoming=rows.filter(r=>r.status==='open'&&isWeek(r)).sort((a,b)=>a.due.localeCompare(b.due));
+$('#recentList').innerHTML=upcoming.length?upcoming.map(r=>weekCard(r,true)).join(''):'<div class="empty">Nenhum boleto em aberto nesta semana.</div>';
+
+$('#geninhoBrief').innerHTML=currentRows.length?`Já existem <b>${currentRows.length} boletos previstos</b> neste mês. ${cLaunch?`Ainda faltam chegar <b>${cLaunch}</b>.`: 'Todos os boletos previstos já foram lançados.'}`:'Quando conectarmos sua planilha, eu vou criar automaticamente todos os boletos previstos do mês.';
+renderMonth();renderReports()}
+function renderMonth(){if(!$('#monthView'))return;const key=$('#monthView').value;const list=rows.filter(r=>monthKey(r)===key).sort((a,b)=>a.due.localeCompare(b.due));$('#mToLaunch').textContent=list.filter(r=>r.status!=='paid'&&!r.billId).length;$('#mOpen').textContent=list.filter(r=>r.status==='open'&&r.billId).length;$('#mPaid').textContent=list.filter(r=>r.status==='paid').length;$('#monthBody').innerHTML=list.map(r=>`<tr><td><b>${esc(r.supplier)}</b></td><td>${pt.format(parseDate(r.due))}</td><td>${r.amount?brl.format(amountNum(r.amount)):'—'}</td><td>${monthStatusHTML(r)}</td><td>${r.billId?`<button class="mini" onclick="downloadFile('${r.billId}')">Baixar PDF</button>`:'<span style="color:#c8bbff">Ainda não lançado</span>'}</td><td>${r.receiptId?`<button class="mini" onclick="downloadFile('${r.receiptId}')">Abrir comprovante</button>`:'—'}</td><td><div class="row-actions">${!r.billId?`<button class="mini" onclick="addBill('${r.id}')">+ Anexar boleto</button>`:''}<button class="mini" onclick="togglePaid('${r.id}')">${r.status==='paid'?'Reabrir':'Marcar pago'}</button><button class="mini" onclick="addReceipt('${r.id}')">+ Comprovante</button></div></td></tr>`).join('');$('#monthEmpty').style.display=list.length?'none':'block'}
+function weekCard(r,actions){const d=parseDate(r.due),today=new Date();today.setHours(0,0,0,0);const tomorrow=new Date(today);tomorrow.setDate(today.getDate()+1);let tag=`${String(d.getDate()).padStart(2,'0')} ${monthNames[d.getMonth()].slice(0,3).toUpperCase()}`,cls='';if(d.getTime()===today.getTime()){tag='HOJE';cls='urgent'}else if(d.getTime()===tomorrow.getTime()){tag='AMANHÃ';cls='soon'}const days=Math.round((d-today)/86400000),when=days===0?'Vence hoje':days===1?'Vence amanhã':days>1?`Em ${days} dias`:'Vencido';return `<div class="week-item"><div class="datebox ${cls}"><small>${tag}</small><b>${d.getDate()}</b></div><div class="week-info"><h4>${esc(r.supplier)}</h4><p>${r.note?esc(r.note):'Boleto cadastrado na central'}</p></div><div class="week-value"><b>${r.amount?brl.format(amountNum(r.amount)):'—'}</b><small>${when}</small></div><div class="row-actions">${r.barcode?`<button class="mini" onclick="copyCode('${r.id}')">Copiar código</button>`:''}${r.billId?`<button class="mini" onclick="downloadFile('${r.billId}')">Ver boleto</button>`:`<button class="mini" onclick="addBill('${r.id}')">Anexar PDF</button>`}</div></div>`}
+function reportRows(){const paid=rows.filter(r=>r.status==='paid');const mode=$('#reportRange')?.value||'month';const now=new Date();let start,end,label;if(mode==='month'){const key=$('#reportMonth').value;const [y,m]=key.split('-').map(Number);start=new Date(y,m-1,1);end=new Date(y,m,0,23,59,59,999);label=monthLabel(key)}else if(mode==='year'){const y=Number($('#reportYear').value);start=new Date(y,0,1);end=new Date(y,11,31,23,59,59,999);label=String(y)}else{const n=Number(mode);end=new Date(now.getFullYear(),now.getMonth()+1,0,23,59,59,999);start=new Date(now.getFullYear(),now.getMonth()-n+1,1);label=`Últimos ${n} meses`}return {list:paid.filter(r=>{const d=parseDate(r.due);return d>=start&&d<=end}).sort((a,b)=>b.due.localeCompare(a.due)),label}}
+function renderReports(){if(!$('#reportBody'))return;const {list,label}=reportRows();$('#rPeriod').textContent=label;$('#rCount').textContent=list.length;$('#rTotal').textContent=brl.format(list.reduce((a,r)=>a+amountNum(r.amount),0));$('#reportBody').innerHTML=list.map(r=>`<tr><td><b>${esc(r.supplier)}</b></td><td>${pt.format(parseDate(r.due))}</td><td>${brl.format(amountNum(r.amount))}</td><td>${r.billId?`<button class="mini" onclick="downloadFile('${r.billId}')">Abrir boleto</button>`:'—'}</td><td>${r.receiptId?`<button class="mini" onclick="downloadFile('${r.receiptId}')">Abrir comprovante</button>`:'<span style="color:#ffcf6e">Sem comprovante</span>'}</td></tr>`).join('');$('#reportEmpty').style.display=list.length?'none':'block';$('#reportMonth').style.display=$('#reportRange').value==='month'?'block':'none';$('#reportYear').style.display=$('#reportRange').value==='year'?'block':'none'}
+function esc(s=''){return s.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+async function copyCode(id){const r=rows.find(x=>x.id===id);if(!r||!r.barcode)return;await navigator.clipboard.writeText(r.barcode);toast('Linha digitável copiada')}
 async function refresh(){rows=await getAll();render()}
-$('#form').addEventListener('submit',async e=>{e.preventDefault();const id=crypto.randomUUID(),bill=$('#billFile').files[0],rec=$('#receiptFile').files[0];let billId=null,receiptId=null;if(bill){billId='bill_'+crypto.randomUUID();await putFile(billId,bill)}if(rec){receiptId='receipt_'+crypto.randomUUID();await putFile(receiptId,rec)}await putRow({id,supplier:$('#supplier').value.trim(),due:$('#due').value,amount:amountNum($('#amount').value),barcode:$('#barcode').value.trim(),status:rec?'paid':$('#status').value,paidAt:rec?new Date().toISOString():null,billId,receiptId,note:$('#note').value.trim(),createdAt:new Date().toISOString()});$('#form').reset();$('#modal').classList.remove('open');await refresh();toast('Boleto salvo')});
-function openModal(){$('#modal').classList.add('open')}$('#newBtn').onclick=openModal;$('#newBtnSearch').onclick=openModal;$('#cancel').onclick=()=>$('#modal').classList.remove('open');function goPanel(id){$$('.nav button[data-panel]').forEach(x=>x.classList.toggle('active',x.dataset.panel===id));$$('.panel').forEach(p=>p.classList.remove('active'));$('#'+id).classList.add('active');render()}$$('.nav button[data-panel]').forEach(b=>b.onclick=()=>goPanel(b.dataset.panel));$('#search').oninput=render;$('#monthFilter').onchange=render;$('#statusFilter').onchange=render;$('#reportRange').onchange=renderReports;$('#reportMonth').onchange=renderReports;$('#reportYear').onchange=renderReports;$('#receiptSearch').oninput=renderReceipts;$('#receiptMonth').onchange=renderReceipts;
-$('#shareBtn').onclick=()=>{const w=rows.filter(r=>isWeek(r)&&r.status==='open');$('#sharePreview').innerHTML=w.length?w.map(weekCard).join(''):'<div class="empty">Nenhum boleto em aberto.</div>';$('#shareModal').classList.add('open')};$('#closeShare').onclick=()=>$('#shareModal').classList.remove('open');$('#copySummary').onclick=async()=>{const w=rows.filter(r=>isWeek(r)&&r.status==='open');await navigator.clipboard.writeText(w.map(r=>`${r.supplier} - ${pt.format(parseDate(r.due))}\n${r.barcode||''}`).join('\n\n'));toast('Resumo copiado')};
-$('#backupBtn').onclick=()=>{const blob=new Blob([JSON.stringify(rows,null,2)],{type:'application/json'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='central-boletos-backup.json';a.click();URL.revokeObjectURL(u)};
-function aiReply(t){t=t.toLowerCase();if(t.includes('semana'))return `${rows.filter(isWeek).length} boleto(s) nesta semana.`;const hit=rows.filter(r=>t.includes(r.supplier.toLowerCase()));if(hit.length)return `Encontrei ${hit.length} registro(s) de ${hit[0].supplier}.`;return 'Posso consultar os boletos já cadastrados. A IA real será conectada depois.'}function sendChat(){const i=$('#chatText'),t=i.value.trim();if(!t)return;$('#messages').insertAdjacentHTML('beforeend',`<div class="msg user">${t}</div>`);i.value='';setTimeout(()=>$('#messages').insertAdjacentHTML('beforeend',`<div class="msg ai">${aiReply(t)}</div>`),150)}$('#sendChat').onclick=sendChat;$('#chatText').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});$('#geninhoLaunch').onclick=()=>$('#geninhoChat').classList.toggle('open');$('#geninhoClose').onclick=()=>$('#geninhoChat').classList.remove('open');openDB().then(refresh);
+$('#form').addEventListener('submit',async e=>{e.preventDefault();const id=crypto.randomUUID(),bill=$('#billFile').files[0],rec=$('#receiptFile').files[0];let billId=null,receiptId=null;if(bill){billId='bill_'+crypto.randomUUID();await putFile(billId,bill)}if(rec){receiptId='receipt_'+crypto.randomUUID();await putFile(receiptId,rec)}const row={id,supplier:$('#supplier').value.trim(),due:$('#due').value,barcode:$('#barcode').value.replace(/\s+/g,' ').trim(),amount:amountNum($('#amount').value),status:rec?'paid':$('#status').value,paidAt:(rec||$('#status').value==='paid')?new Date().toISOString():null,billId,billName:bill?.name||'',receiptId,receiptName:rec?.name||'',note:$('#note').value.trim(),createdAt:new Date().toISOString()};await putRow(row);$('#form').reset();$('#modal').classList.remove('open');await refresh();toast('Boleto salvo')});
+if($('#newBtn')) $('#newBtn').onclick=()=>$('#modal').classList.add('open');$('#newBtnSearch').onclick=()=>$('#modal').classList.add('open');$('#newMonthBtn').onclick=()=>$('#modal').classList.add('open');$('#cancel').onclick=()=>$('#modal').classList.remove('open');$('#modal').addEventListener('click',e=>{if(e.target===$('#modal'))$('#modal').classList.remove('open')});
+function goPanel(id){$$('.nav button[data-panel]').forEach(x=>x.classList.toggle('active',x.dataset.panel===id));$$('.panel').forEach(p=>p.classList.remove('active'));$('#'+id).classList.add('active');const titles={central:'Central',mes:'Boletos do mês',buscar:'Buscar boleto',relatorios:'Relatórios'};$('#topTitle').textContent=titles[id]||'Central';render()}$$('.nav button[data-panel]').forEach(b=>b.onclick=()=>goPanel(b.dataset.panel));$$('[data-go]').forEach(b=>b.onclick=()=>goPanel(b.dataset.go));$('#menuToggle').onclick=()=>{const collapsed=!appEl.classList.contains('sidebar-collapsed');setSidebarCollapsed(collapsed)};
+$('#search').oninput=render;$('#monthFilter').onchange=render;$('#statusFilter').onchange=render;$('#monthView').onchange=renderMonth;$('#reportRange').onchange=renderReports;$('#reportMonth').onchange=renderReports;$('#reportYear').onchange=renderReports;
+if($('#backupBtn')) $('#backupBtn').onclick=()=>{const data=JSON.stringify({exportedAt:new Date().toISOString(),boletos:rows},null,2),blob=new Blob([data],{type:'application/json'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='central-boletos-backup.json';a.click();URL.revokeObjectURL(u);toast('Dados exportados (sem os PDFs)')};
+function aiReply(text){const t=text.toLowerCase();if(t.includes('semana')){const w=rows.filter(isWeek);return w.length?`Encontrei ${w.length} boleto(s) com vencimento nesta semana: ${w.map(x=>x.supplier).join(', ')}.`:'Não há boletos cadastrados com vencimento nesta semana.'}if(t.includes('sem pdf')||t.includes('sem boleto')){const a=rows.filter(x=>!x.billId);return a.length?`${a.length} registro(s) estão sem PDF: ${a.map(x=>x.supplier).join(', ')}.`:'Todos os registros possuem PDF do boleto.'}if(t.includes('comprovante')){const a=rows.filter(x=>x.status==='paid'&&!x.receiptId);return a.length?`${a.length} boleto(s) pagos ainda estão sem comprovante: ${a.map(x=>x.supplier).join(', ')}.`:'Não encontrei boleto pago sem comprovante.'}const hit=rows.filter(x=>t.includes(x.supplier.toLowerCase()));if(hit.length)return `Sim. Encontrei ${hit.length} registro(s) de ${hit[0].supplier}. Vencimento(s): ${hit.map(x=>pt.format(parseDate(x.due))).join(', ')}.`;return 'Nesta demonstração eu consigo consultar semana, PDF, comprovantes e fornecedores já cadastrados. A IA real será conectada na próxima etapa.'}
+function sendChat(){const inp=$('#chatText'),text=inp.value.trim();if(!text)return;$('#messages').insertAdjacentHTML('beforeend',`<div class="msg user">${esc(text)}</div>`);inp.value='';setTimeout(()=>{$('#messages').insertAdjacentHTML('beforeend',`<div class="msg ai">${esc(aiReply(text))}</div>`);$('#messages').scrollTop=$('#messages').scrollHeight},180)}$('#sendChat').onclick=sendChat;$('#chatText').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});
+
+$('#openGeninhoBrief').onclick=()=>{$('#geninhoChat').classList.add('open');setTimeout(()=>$('#chatText').focus(),50)};
+$('#geninhoLaunch').onclick=()=>{$('#geninhoChat').classList.toggle('open');if($('#geninhoChat').classList.contains('open'))setTimeout(()=>$('#chatText').focus(),50)};
+$('#geninhoClose').onclick=()=>$('#geninhoChat').classList.remove('open');
+$$('[data-geninho]').forEach(b=>b.onclick=()=>{$('#chatText').value=b.dataset.geninho;sendChat()});
+openDB().then(refresh).catch(e=>alert('Erro ao abrir banco local: '+e.message));
 </script>
 </body>
 </html>
