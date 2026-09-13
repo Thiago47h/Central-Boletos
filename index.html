@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Central de Boletos</title>
+<style>
+:root{
+  --bg:#070b17;
+  --bg2:#0c1224;
+  --card:rgba(13,18,37,.72);
+  --card-strong:rgba(18,24,48,.86);
+  --text:#ecf3ff;
+  --muted:#8ea0c7;
+  --border:rgba(141,168,255,.16);
+  --accent:#7c5cff;
+  --accent-2:#00d1ff;
+  --accent-3:#1c2448;
+  --success:#123627;
+  --successText:#91f0b7;
+  --warn:#3c2d11;
+  --warnText:#ffd978;
+  --danger:#3f1820;
+  --dangerText:#ff9eac;
+  --shadow:0 18px 50px rgba(0,0,0,.38);
+  --glow:0 0 0 1px rgba(124,92,255,.18),0 10px 30px rgba(0,209,255,.08),0 18px 40px rgba(124,92,255,.12);
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{
+  margin:0;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 15% 20%, rgba(0,209,255,.14), transparent 28%),
+    radial-gradient(circle at 85% 10%, rgba(124,92,255,.18), transparent 24%),
+    radial-gradient(circle at 80% 70%, rgba(87,110,255,.12), transparent 30%),
+    linear-gradient(180deg,#060912 0%,#091120 50%,#070b17 100%);
+}
+body::before{
+  content:'';
+  position:fixed;inset:0;pointer-events:none;opacity:.25;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size:28px 28px;
+  mask-image:linear-gradient(180deg,rgba(0,0,0,.85),rgba(0,0,0,.2));
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;transition:.18s ease}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.side{
+  background:rgba(4,8,18,.72);
+  backdrop-filter:blur(18px);
+  border-right:1px solid rgba(125,150,255,.12);
+  color:#fff;padding:26px 18px;position:sticky;top:0;height:100vh;
+  box-shadow:inset -1px 0 0 rgba(255,255,255,.03);
+}
+.brand{display:flex;gap:12px;align-items:center;font-weight:800;font-size:19px;margin-bottom:34px;letter-spacing:.2px}
+.logo{width:38px;height:38px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;box-shadow:0 8px 25px rgba(124,92,255,.3);color:white}
+.nav{display:grid;gap:8px}
+.nav button{border:1px solid transparent;background:transparent;color:#a9b7d8;text-align:left;padding:12px 13px;border-radius:14px}
+.nav button.active,.nav button:hover{background:linear-gradient(135deg,rgba(124,92,255,.2),rgba(0,209,255,.12));color:#fff;border-color:rgba(124,92,255,.25);box-shadow:var(--glow)}
+.nav small{display:block;color:#5d6f9b;margin:24px 12px 8px;font-size:11px;letter-spacing:1.4px}
+.main{padding:30px 34px;position:relative}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}
+.top h1{margin:0;font-size:28px;letter-spacing:.2px}
+.top p{margin:5px 0 0;color:var(--muted)}
+.actions{display:flex;gap:10px}
+.btn,.mini{border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--text);border-radius:12px;padding:10px 14px;font-weight:700;box-shadow:none}
+.btn:hover,.mini:hover{transform:translateY(-1px);border-color:rgba(124,92,255,.34)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),#4f7cff 58%,var(--accent-2));color:white;border-color:transparent;box-shadow:0 10px 28px rgba(95,89,255,.34)}
+.btn.primary:hover{filter:brightness(1.05)}
+.btn.soft{background:rgba(0,209,255,.08);color:#b7f4ff;border-color:rgba(0,209,255,.18)}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:22px}
+.card,.toolbar,.table-wrap,.dialog,.chatbox,.geninho,.week-item{background:var(--card);border:1px solid var(--border);backdrop-filter:blur(18px);box-shadow:var(--shadow)}
+.card{border-radius:18px;padding:18px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;inset:auto -30% -50% auto;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle, rgba(0,209,255,.14), transparent 64%)}
+.card .label{color:var(--muted);font-size:13px}
+.card .num{font-size:30px;font-weight:800;margin-top:6px;letter-spacing:.3px}
+.toolbar{border-radius:18px;padding:13px;display:flex;gap:10px;align-items:center;margin-bottom:14px}
+.toolbar input,.toolbar select,.field input,.field select,.field textarea,.chatinput input,.geninho .chatinput input{border:1px solid rgba(132,156,255,.14);border-radius:12px;padding:11px 12px;background:rgba(8,13,28,.7);color:var(--text);outline:none}
+.toolbar input,.chatinput input,.geninho .chatinput input{flex:1}
+.toolbar input::placeholder,.field textarea::placeholder,.chatinput input::placeholder,.geninho .chatinput input::placeholder{color:#7081aa}
+.toolbar input:focus,.toolbar select:focus,.field input:focus,.field select:focus,.field textarea:focus,.chatinput input:focus,.geninho .chatinput input:focus{border-color:rgba(0,209,255,.42);box-shadow:0 0 0 3px rgba(0,209,255,.08)}
+.table-wrap{border-radius:18px;overflow:hidden}
+table{width:100%;border-collapse:collapse}th,td{padding:14px;border-bottom:1px solid rgba(141,168,255,.08);text-align:left;font-size:14px}th{color:#92a6d2;font-weight:700;background:rgba(255,255,255,.02)}tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.02)}
+.status{display:inline-flex;align-items:center;padding:7px 10px;border-radius:999px;font-size:12px;font-weight:800;border:1px solid transparent}
+.status.open{background:rgba(255,187,51,.14);color:var(--warnText);border-color:rgba(255,187,51,.18)}
+.status.paid{background:rgba(83,244,147,.12);color:var(--successText);border-color:rgba(83,244,147,.15)}
+.status.late{background:rgba(255,87,118,.12);color:var(--dangerText);border-color:rgba(255,87,118,.18)}
+.mini{padding:7px 10px;font-size:12px;font-weight:700;background:rgba(255,255,255,.025)}
+.row-actions{display:flex;gap:6px;flex-wrap:wrap}.empty{padding:40px;text-align:center;color:var(--muted)}.panel{display:none}.panel.active{display:block}
+.modal{position:fixed;inset:0;background:rgba(2,6,16,.68);display:none;align-items:center;justify-content:center;padding:20px;z-index:30;backdrop-filter:blur(10px)}.modal.open{display:flex}
+.dialog{width:min(720px,100%);max-height:90vh;overflow:auto;border-radius:22px;padding:24px;background:var(--card-strong)}.dialog h2{margin:0 0 4px}.dialog p{color:var(--muted);margin:0 0 18px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:grid;gap:6px;margin-bottom:13px}.field label{font-size:13px;font-weight:700;color:#dfe8ff}.field textarea{min-height:80px;resize:vertical}.dialog-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:10px}
+.week-list{display:grid;gap:10px}.week-item{border-radius:16px;padding:15px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}.week-item h4{margin:0 0 4px}.week-item p{margin:0;color:var(--muted);font-size:13px}.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:rgba(0,0,0,.22);border:1px solid rgba(124,92,255,.12);border-radius:10px;padding:9px 10px;font-size:12px;margin-top:8px;word-break:break-all;color:#d8e4ff}
+.toast{position:fixed;right:22px;bottom:88px;background:rgba(4,8,18,.92);color:white;padding:11px 14px;border-radius:12px;opacity:0;transform:translateY(8px);transition:.2s;z-index:50;border:1px solid rgba(124,92,255,.2);box-shadow:var(--shadow)}.toast.show{opacity:1;transform:none}
+.geninho-launch{position:fixed;right:20px;bottom:20px;z-index:45;border:1px solid rgba(124,92,255,.28);background:rgba(9,14,28,.76);color:transparent;border-radius:999px;padding:0;width:58px;height:58px;box-shadow:0 12px 35px rgba(3,8,18,.42),0 0 0 1px rgba(255,255,255,.02);display:grid;place-items:center;backdrop-filter:blur(18px)}
+.geninho-dot{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:white;display:grid;place-items:center;font-size:15px}
+.geninho{position:fixed;right:24px;bottom:88px;width:min(360px,calc(100vw - 28px));height:500px;max-height:70vh;border-radius:22px;z-index:46;display:none;overflow:hidden;background:var(--card-strong)}.geninho.open{display:grid;grid-template-rows:auto 1fr auto}.geninho-head{background:linear-gradient(135deg,rgba(124,92,255,.22),rgba(0,209,255,.1));padding:14px 15px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(141,168,255,.08)}.geninho-title{display:flex;align-items:center;gap:10px}.geninho-avatar{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;font-weight:900}.geninho-title small{display:block;color:#a8b8dd}.geninho-close{border:0;background:transparent;color:#fff;font-size:20px}.messages{padding:14px;overflow:auto;display:grid;align-content:start;gap:9px}.msg{max-width:86%;padding:9px 11px;border-radius:12px;font-size:13px;line-height:1.4}.msg.user{margin-left:auto;background:linear-gradient(135deg,var(--accent),#498fff)}.msg.ai{background:rgba(255,255,255,.045);border:1px solid rgba(141,168,255,.08)}.chatinput{display:flex;gap:7px;padding:10px;border-top:1px solid rgba(141,168,255,.08)}
+@media(max-width:900px){.app{grid-template-columns:1fr}.side{height:auto;position:static}.nav{grid-template-columns:repeat(4,1fr)}.main{padding:20px}.cards{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
+@media(max-width:560px){.cards{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.toolbar{flex-direction:column;align-items:stretch}.table-wrap{overflow:auto}.nav{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><div class="logo">▣</div>Central de Boletos</div>
+    <div class="nav">
+      <button class="active" data-panel="central">▦ &nbsp; Central</button>
+      <button data-panel="buscar">⌕ &nbsp; Buscar boleto</button>
+      <button data-panel="semana">⌁ &nbsp; Boletos da semana</button>
+      <button data-panel="relatorios">▤ &nbsp; Relatórios</button>
+      <button data-panel="comprovantes">✓ &nbsp; Comprovantes</button>
+      <small>ORGANIZAÇÃO</small>
+      <button id="backupBtn">⇩ &nbsp; Exportar dados</button>
+    </div>
+  </aside>
+  <main class="main">
+    <section id="central" class="panel active">
+      <div class="top"><div><h1>Central</h1><p>O que precisa da sua atenção nesta semana.</p></div><div class="actions"><button class="btn primary" id="newBtn">+ Enviar boleto</button></div></div>
+      <div class="cards"><div class="card"><div class="label">Boletos em aberto esta semana</div><div class="num" id="cWeek">0</div></div><div class="card"><div class="label">Vencem hoje</div><div class="num" id="cToday">0</div></div></div>
+      <div class="table-wrap"><div style="padding:18px 18px 8px"><b>Próximos boletos</b></div><div id="recentList" class="week-list" style="padding:10px 14px 16px"></div></div>
+    </section>
+    <section id="buscar" class="panel">
+      <div class="top"><div><h1>Buscar boleto</h1><p>Encontre qualquer boleto já cadastrado.</p></div><button class="btn primary" id="newBtnSearch">+ Enviar boleto</button></div>
+      <div class="toolbar"><input id="search" placeholder="Buscar fornecedor ou código..."/><select id="monthFilter"></select><select id="statusFilter"><option value="all">Todos os status</option><option value="open">A pagar</option><option value="paid">Pago</option></select></div>
+      <div class="table-wrap"><table><thead><tr><th>Fornecedor</th><th>Vencimento</th><th>Linha digitável</th><th>Boleto</th><th>Status</th><th>Comprovante</th><th>Ações</th></tr></thead><tbody id="tbody"></tbody></table><div class="empty" id="empty">Nenhum boleto cadastrado ainda.</div></div>
+    </section>
+    <section id="semana" class="panel"><div class="top"><div><h1>Boletos da semana</h1><p id="weekRange">—</p></div><div class="actions"><button class="btn primary" id="shareBtn">Gerar link da semana</button></div></div><div class="week-list" id="weekList"></div><div class="hint">Nesta versão o botão gera a prévia. O link público será ativado quando conectarmos banco online.</div></section>
+    <section id="relatorios" class="panel"><div class="top"><div><h1>Relatórios</h1><p>Consulte apenas pagamentos realizados por período.</p></div></div><div class="toolbar"><select id="reportRange"><option value="month">Mês específico</option><option value="3">Últimos 3 meses</option><option value="6">Últimos 6 meses</option><option value="year">Ano inteiro</option></select><select id="reportMonth"></select><select id="reportYear"></select></div><div class="cards"><div class="card"><div class="label">Período</div><div class="num" id="rPeriod" style="font-size:20px">—</div></div><div class="card"><div class="label">Total pago</div><div class="num" id="rTotal">R$ 0,00</div></div></div><div class="table-wrap"><table><thead><tr><th>Fornecedor</th><th>Vencimento</th><th>Valor</th><th>Boleto</th><th>Comprovante</th></tr></thead><tbody id="reportBody"></tbody></table><div class="empty" id="reportEmpty">Nenhum pagamento neste período.</div></div></section>
+    <section id="comprovantes" class="panel"><div class="top"><div><h1>Comprovantes</h1><p>Busque rapidamente os comprovantes já arquivados.</p></div></div><div class="toolbar"><input id="receiptSearch" placeholder="Buscar fornecedor..."/><select id="receiptMonth"></select></div><div class="table-wrap"><table><thead><tr><th>Fornecedor</th><th>Vencimento</th><th>Valor</th><th>Boleto</th><th>Comprovante</th></tr></thead><tbody id="receiptBody"></tbody></table><div class="empty" id="receiptEmpty">Nenhum comprovante encontrado.</div></div></section>
+  </main>
+</div>
+<button class="geninho-launch" id="geninhoLaunch"><span class="geninho-dot">✦</span></button>
+<div class="geninho" id="geninhoChat"><div class="geninho-head"><div class="geninho-title"><div class="geninho-avatar">G</div><div><strong>Geninho</strong><small>Assistente da Central</small></div></div><button class="geninho-close" id="geninhoClose">×</button></div><div class="messages" id="messages"><div class="msg ai">Oi! Eu sou o <b>Geninho</b> ✦ Posso consultar os boletos cadastrados.</div></div><div class="chatinput"><input id="chatText" placeholder="Fale com o Geninho..."/><button class="btn primary" id="sendChat">Enviar</button></div></div>
+<div class="modal" id="modal"><div class="dialog"><h2>Novo boleto</h2><p>Cadastre os dados e anexe o PDF.</p><form id="form"><div class="grid2"><div class="field"><label>Fornecedor</label><input id="supplier" required /></div><div class="field"><label>Vencimento</label><input id="due" type="date" required /></div></div><div class="grid2"><div class="field"><label>Valor</label><input id="amount" inputmode="decimal" placeholder="0,00" /></div><div class="field"><label>Status</label><select id="status"><option value="open">A pagar</option><option value="paid">Pago</option></select></div></div><div class="field"><label>Linha digitável</label><input id="barcode" /></div><div class="grid2"><div class="field"><label>PDF do boleto</label><input id="billFile" type="file" accept="application/pdf"/></div><div class="field"><label>Comprovante</label><input id="receiptFile" type="file" accept="application/pdf,image/*"/></div></div><div class="field"><label>Observação</label><textarea id="note"></textarea></div><div class="dialog-actions"><button type="button" class="btn" id="cancel">Cancelar</button><button class="btn primary">Salvar boleto</button></div></form></div></div>
+<div class="modal" id="shareModal"><div class="dialog"><h2>Prévia do link da semana</h2><p>É assim que seu chefe verá os boletos.</p><div id="sharePreview" class="week-list"></div><div class="dialog-actions"><button class="btn" id="closeShare">Fechar</button><button class="btn soft" id="copySummary">Copiar resumo</button></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const DB_NAME='central_boletos_db',DB_VERSION=1;let db,rows=[];const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],pt=new Intl.DateTimeFormat('pt-BR'),brl=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1800)}
+function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB_NAME,DB_VERSION);r.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains('boletos'))d.createObjectStore('boletos',{keyPath:'id'});if(!d.objectStoreNames.contains('files'))d.createObjectStore('files',{keyPath:'id'})};r.onsuccess=()=>{db=r.result;res(db)};r.onerror=()=>rej(r.error)})}
+function tx(s,m='readonly'){return db.transaction(s,m).objectStore(s)}
+function getAll(){return new Promise((res,rej)=>{const r=tx('boletos').getAll();r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+function putRow(x){return new Promise((res,rej)=>{const r=tx('boletos','readwrite').put(x);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
+function delRow(id){return new Promise((res,rej)=>{const r=tx('boletos','readwrite').delete(id);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
+function putFile(id,file){return new Promise((res,rej)=>{const r=tx('files','readwrite').put({id,name:file.name,type:file.type,blob:file});r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
+function getFile(id){return new Promise((res,rej)=>{const r=tx('files').get(id);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+function parseDate(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)}function isoDate(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}function amountNum(v){if(typeof v==='number')return v;return Number(String(v||'0').replace(/\./g,'').replace(',','.'))||0}function monthKey(r){return r.due.slice(0,7)}function monthLabel(k){const [y,m]=k.split('-');return new Date(y,m-1,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}
+function weekBounds(){const n=new Date(),day=n.getDay(),diff=(day===0?-6:1-day),s=new Date(n);s.setDate(n.getDate()+diff);s.setHours(0,0,0,0);const e=new Date(s);e.setDate(s.getDate()+6);e.setHours(23,59,59,999);return{start:s,end:e}}function isWeek(r){const d=parseDate(r.due),{start,end}=weekBounds();return d>=start&&d<=end}
+function fillFilters(){const keys=[...new Set(rows.map(monthKey))].sort().reverse();const now=`${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}`;if(!keys.includes(now))keys.unshift(now);const all='<option value="all">Todos os meses</option>'+keys.map(k=>`<option value="${k}">${monthLabel(k)}</option>`).join('');$('#monthFilter').innerHTML=all;$('#receiptMonth').innerHTML=all;$('#reportMonth').innerHTML=keys.map(k=>`<option value="${k}">${monthLabel(k)}</option>`).join('');const years=[...new Set(rows.map(r=>r.due.slice(0,4)).concat(String(new Date().getFullYear())))].sort().reverse();$('#reportYear').innerHTML=years.map(y=>`<option>${y}</option>`).join('')}
+function statusHTML(r){if(r.status==='paid')return '<span class="status paid">Pago</span>';if(parseDate(r.due)<new Date(new Date().setHours(0,0,0,0)))return '<span class="status late">Vencido</span>';return '<span class="status open">A pagar</span>'}
+async function downloadFile(id){const f=await getFile(id);if(!f)return toast('Arquivo não encontrado');const u=URL.createObjectURL(f.blob),a=document.createElement('a');a.href=u;a.download=f.name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}async function copyCode(id){const r=rows.find(x=>x.id===id);if(r?.barcode){await navigator.clipboard.writeText(r.barcode);toast('Linha digitável copiada')}}
+async function addReceipt(id){const inp=document.createElement('input');inp.type='file';inp.accept='application/pdf,image/*';inp.onchange=async()=>{const f=inp.files[0];if(!f)return;const r=rows.find(x=>x.id===id),fid='receipt_'+crypto.randomUUID();await putFile(fid,f);r.receiptId=fid;r.receiptName=f.name;r.status='paid';r.paidAt=new Date().toISOString();await putRow(r);await refresh();toast('Comprovante anexado')};inp.click()}async function togglePaid(id){const r=rows.find(x=>x.id===id);r.status=r.status==='paid'?'open':'paid';r.paidAt=r.status==='paid'?new Date().toISOString():null;await putRow(r);await refresh()}async function removeRow(id){if(!confirm('Excluir este boleto?'))return;await delRow(id);await refresh()}
+function weekCard(r){return `<div class="week-item"><div><h4>${r.supplier}</h4><p>Vencimento: ${pt.format(parseDate(r.due))} · ${brl.format(amountNum(r.amount))}</p>${r.barcode?`<div class="code">${r.barcode}</div>`:''}</div><div class="row-actions">${r.barcode?`<button class="mini" onclick="copyCode('${r.id}')">Copiar código</button>`:''}${r.billId?`<button class="mini" onclick="downloadFile('${r.billId}')">Baixar PDF</button>`:''}</div></div>`}
+function render(){fillFilters();const q=$('#search').value.toLowerCase(),mf=$('#monthFilter').value,sf=$('#statusFilter').value;const filtered=rows.filter(r=>(!q||r.supplier.toLowerCase().includes(q)||(r.barcode||'').includes(q))&&(mf==='all'||monthKey(r)===mf)&&(sf==='all'||r.status===sf));$('#tbody').innerHTML=filtered.map(r=>`<tr><td><b>${r.supplier}</b></td><td>${pt.format(parseDate(r.due))}</td><td>${r.barcode?`<button class="mini" onclick="copyCode('${r.id}')">Copiar</button>`:'—'}</td><td>${r.billId?`<button class="mini" onclick="downloadFile('${r.billId}')">PDF</button>`:'—'}</td><td>${statusHTML(r)}</td><td>${r.receiptId?`<button class="mini" onclick="downloadFile('${r.receiptId}')">Abrir</button>`:'—'}</td><td><div class="row-actions"><button class="mini" onclick="togglePaid('${r.id}')">${r.status==='paid'?'Reabrir':'Pago'}</button><button class="mini" onclick="addReceipt('${r.id}')">+ Comprovante</button><button class="mini" onclick="removeRow('${r.id}')">Excluir</button></div></td></tr>`).join('');$('#empty').style.display=filtered.length?'none':'block';const week=rows.filter(r=>isWeek(r)&&r.status==='open');$('#cWeek').textContent=week.length;$('#cToday').textContent=rows.filter(r=>r.status==='open'&&r.due===isoDate(new Date())).length;$('#recentList').innerHTML=week.length?week.sort((a,b)=>a.due.localeCompare(b.due)).map(weekCard).join(''):'<div class="empty">Nenhum boleto em aberto nesta semana.</div>';const{start,end}=weekBounds();$('#weekRange').textContent=`${pt.format(start)} a ${pt.format(end)}`;$('#weekList').innerHTML=rows.filter(isWeek).sort((a,b)=>a.due.localeCompare(b.due)).map(weekCard).join('')||'<div class="empty card">Nenhum boleto nesta semana.</div>';renderReports();renderReceipts()}
+function reportRows(){const paid=rows.filter(r=>r.status==='paid'),mode=$('#reportRange').value,now=new Date();let start,end,label;if(mode==='month'){const[y,m]=$('#reportMonth').value.split('-').map(Number);start=new Date(y,m-1,1);end=new Date(y,m,0,23,59,59);label=monthLabel($('#reportMonth').value)}else if(mode==='year'){const y=Number($('#reportYear').value);start=new Date(y,0,1);end=new Date(y,11,31,23,59,59);label=String(y)}else{const n=Number(mode);end=new Date(now.getFullYear(),now.getMonth()+1,0,23,59,59);start=new Date(now.getFullYear(),now.getMonth()-n+1,1);label=`Últimos ${n} meses`}return{list:paid.filter(r=>{const d=parseDate(r.due);return d>=start&&d<=end}),label}}
+function renderReports(){const{list,label}=reportRows();$('#rPeriod').textContent=label;$('#rTotal').textContent=brl.format(list.reduce((s,r)=>s+amountNum(r.amount),0));$('#reportBody').innerHTML=list.map(r=>`<tr><td><b>${r.supplier}</b></td><td>${pt.format(parseDate(r.due))}</td><td>${brl.format(amountNum(r.amount))}</td><td>${r.billId?`<button class="mini" onclick="downloadFile('${r.billId}')">Abrir boleto</button>`:'—'}</td><td>${r.receiptId?`<button class="mini" onclick="downloadFile('${r.receiptId}')">Abrir comprovante</button>`:'—'}</td></tr>`).join('');$('#reportEmpty').style.display=list.length?'none':'block';$('#reportMonth').style.display=$('#reportRange').value==='month'?'block':'none';$('#reportYear').style.display=$('#reportRange').value==='year'?'block':'none'}
+function renderReceipts(){const q=$('#receiptSearch').value.toLowerCase(),mf=$('#receiptMonth').value,list=rows.filter(r=>r.receiptId&&(!q||r.supplier.toLowerCase().includes(q))&&(mf==='all'||monthKey(r)===mf));$('#receiptBody').innerHTML=list.map(r=>`<tr><td><b>${r.supplier}</b></td><td>${pt.format(parseDate(r.due))}</td><td>${brl.format(amountNum(r.amount))}</td><td>${r.billId?`<button class="mini" onclick="downloadFile('${r.billId}')">Abrir boleto</button>`:'—'}</td><td><button class="mini" onclick="downloadFile('${r.receiptId}')">Abrir comprovante</button></td></tr>`).join('');$('#receiptEmpty').style.display=list.length?'none':'block'}
+async function refresh(){rows=await getAll();render()}
+$('#form').addEventListener('submit',async e=>{e.preventDefault();const id=crypto.randomUUID(),bill=$('#billFile').files[0],rec=$('#receiptFile').files[0];let billId=null,receiptId=null;if(bill){billId='bill_'+crypto.randomUUID();await putFile(billId,bill)}if(rec){receiptId='receipt_'+crypto.randomUUID();await putFile(receiptId,rec)}await putRow({id,supplier:$('#supplier').value.trim(),due:$('#due').value,amount:amountNum($('#amount').value),barcode:$('#barcode').value.trim(),status:rec?'paid':$('#status').value,paidAt:rec?new Date().toISOString():null,billId,receiptId,note:$('#note').value.trim(),createdAt:new Date().toISOString()});$('#form').reset();$('#modal').classList.remove('open');await refresh();toast('Boleto salvo')});
+function openModal(){$('#modal').classList.add('open')}$('#newBtn').onclick=openModal;$('#newBtnSearch').onclick=openModal;$('#cancel').onclick=()=>$('#modal').classList.remove('open');function goPanel(id){$$('.nav button[data-panel]').forEach(x=>x.classList.toggle('active',x.dataset.panel===id));$$('.panel').forEach(p=>p.classList.remove('active'));$('#'+id).classList.add('active');render()}$$('.nav button[data-panel]').forEach(b=>b.onclick=()=>goPanel(b.dataset.panel));$('#search').oninput=render;$('#monthFilter').onchange=render;$('#statusFilter').onchange=render;$('#reportRange').onchange=renderReports;$('#reportMonth').onchange=renderReports;$('#reportYear').onchange=renderReports;$('#receiptSearch').oninput=renderReceipts;$('#receiptMonth').onchange=renderReceipts;
+$('#shareBtn').onclick=()=>{const w=rows.filter(r=>isWeek(r)&&r.status==='open');$('#sharePreview').innerHTML=w.length?w.map(weekCard).join(''):'<div class="empty">Nenhum boleto em aberto.</div>';$('#shareModal').classList.add('open')};$('#closeShare').onclick=()=>$('#shareModal').classList.remove('open');$('#copySummary').onclick=async()=>{const w=rows.filter(r=>isWeek(r)&&r.status==='open');await navigator.clipboard.writeText(w.map(r=>`${r.supplier} - ${pt.format(parseDate(r.due))}\n${r.barcode||''}`).join('\n\n'));toast('Resumo copiado')};
+$('#backupBtn').onclick=()=>{const blob=new Blob([JSON.stringify(rows,null,2)],{type:'application/json'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='central-boletos-backup.json';a.click();URL.revokeObjectURL(u)};
+function aiReply(t){t=t.toLowerCase();if(t.includes('semana'))return `${rows.filter(isWeek).length} boleto(s) nesta semana.`;const hit=rows.filter(r=>t.includes(r.supplier.toLowerCase()));if(hit.length)return `Encontrei ${hit.length} registro(s) de ${hit[0].supplier}.`;return 'Posso consultar os boletos já cadastrados. A IA real será conectada depois.'}function sendChat(){const i=$('#chatText'),t=i.value.trim();if(!t)return;$('#messages').insertAdjacentHTML('beforeend',`<div class="msg user">${t}</div>`);i.value='';setTimeout(()=>$('#messages').insertAdjacentHTML('beforeend',`<div class="msg ai">${aiReply(t)}</div>`),150)}$('#sendChat').onclick=sendChat;$('#chatText').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});$('#geninhoLaunch').onclick=()=>$('#geninhoChat').classList.toggle('open');$('#geninhoClose').onclick=()=>$('#geninhoChat').classList.remove('open');openDB().then(refresh);
+</script>
+</body>
+</html>
