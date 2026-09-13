@@ -101,9 +101,28 @@ hr{border-color:#2a2f38!important}
 .alert-item span{color:#9ca3af!important}
 .section-title strong{color:#f2f4f7!important}
 .section-title button{color:#69d5c1!important}
+
+body:not(.signed-in) .app,body:not(.signed-in) .geninho-launch,body:not(.signed-in) .geninho{display:none!important}
+body.signed-in #authScreen{display:none}
+#authScreen{min-height:100vh;display:grid;place-items:center;padding:24px}
+.auth-card{width:100%;max-width:440px;padding:32px;background:var(--card);border:1px solid var(--border);border-radius:22px}
+.auth-card h1{font-size:25px}.auth-card p{color:var(--muted);line-height:1.6}
+#authStatus{min-height:40px;font-size:13px}
+#operationError{position:fixed;top:0;left:0;right:0;padding:14px;background:#531e29;color:white;z-index:100}
+.working .app,.working #modal{pointer-events:none;opacity:.75}
+button:disabled{cursor:wait;opacity:.5}
+.topbar-right{flex-wrap:wrap}#accountEmail{max-width:240px;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
+<section id="authScreen" aria-label="Acesso à Central">
+ <div class="auth-card"><div class="logo">CB</div><h1>Central de Boletos</h1><p>Seus boletos e comprovantes, organizados em um só lugar.</p>
+ <form id="authForm"><div class="field"><label for="authEmail">E-mail</label><input id="authEmail" type="email" autocomplete="username" required></div>
+ <div class="field"><label for="authPassword">Senha</label><input id="authPassword" type="password" autocomplete="current-password" required minlength="8"></div>
+ <button id="authSubmit" class="btn soft" disabled>Entrar</button><button id="signupBtn" class="btn" type="button" disabled>Criar conta</button>
+ <p id="authStatus" role="status">Conectando…</p></form></div>
+</section>
+<div id="operationError" role="alert" hidden></div>
 <div class="app">
   <aside class="side">
     <div class="brand">
@@ -143,7 +162,7 @@ hr{border-color:#2a2f38!important}
   <main class="main">
     <div class="topbar">
       <div class="topbar-left"><button class="menu-toggle" id="menuToggle" aria-label="Fechar menu">☰</button><div><h1 id="topTitle">Central</h1><p id="centralMonthLabel">Visão geral do mês</p></div></div>
-      <div class="topbar-right"><div style="text-align:right"><strong style="display:block;color:var(--text)">Financeiro</strong><span>Central de boletos</span></div><div class="top-avatar">GL</div></div>
+      <div class="topbar-right"><span id="accountEmail"></span><button class="mini" id="importBtn" hidden>Importar dados locais</button><button class="mini" id="logoutBtn">Sair</button></div>
     </div>
     <div class="content">
       <section id="central" class="panel active">
@@ -193,8 +212,9 @@ hr{border-color:#2a2f38!important}
 <button class="geninho-launch" id="geninhoLaunch" aria-label="Abrir Geninho"><span class="geninho-dot">G</span></button>
 <div class="geninho" id="geninhoChat" aria-label="Chat do Geninho"><div class="geninho-head"><div class="geninho-title"><div class="geninho-avatar">G</div><div><strong>Geninho</strong><small>Assistente da Central de Boletos</small></div></div><button class="geninho-close" id="geninhoClose" aria-label="Fechar">×</button></div><div><div class="messages" id="messages"><div class="msg ai">Oi! Eu sou o <b>Geninho</b>. Posso consultar os boletos cadastrados e, na próxima etapa, vou ler sua planilha e organizar o mês automaticamente.</div></div><div class="geninho-suggestions"><button data-geninho="Quais boletos vencem esta semana?">Esta semana</button><button data-geninho="Quais estão sem PDF?">A lançar</button><button data-geninho="Quais pagos estão sem comprovante?">Comprovantes</button></div></div><div class="chatinput"><input id="chatText" placeholder="Fale com o Geninho..."/><button class="btn primary" id="sendChat">Enviar</button></div></div>
 
-<div class="modal" id="modal"><div class="dialog"><h2>Novo boleto</h2><p>Você pode cadastrar uma previsão sem PDF; ela ficará como “A lançar”.</p><form id="form"><div class="grid2"><div class="field"><label>Fornecedor</label><input id="supplier" required placeholder="Ex.: ENEL"/></div><div class="field"><label>Vencimento</label><input id="due" type="date" required/></div></div><div class="field"><label>Linha digitável / código do boleto</label><input id="barcode" placeholder="Cole ou digite o código"/></div><div class="grid2"><div class="field"><label>Valor do boleto</label><input id="amount" inputmode="decimal" placeholder="Ex.: 1250,90"/></div><div class="field"><label>Status</label><select id="status"><option value="open">A pagar</option><option value="paid">Pago</option></select></div></div><div class="field"><label>PDF do boleto</label><input id="billFile" type="file" accept="application/pdf"/></div><div class="field"><label>Comprovante (opcional)</label><input id="receiptFile" type="file" accept="application/pdf,image/*"/></div><div class="field"><label>Observação</label><textarea id="note" placeholder="Opcional"></textarea></div><div class="dialog-actions"><button type="button" class="btn" id="cancel">Cancelar</button><button class="btn primary">Salvar boleto</button></div></form></div></div>
+<div class="modal" id="modal"><div class="dialog"><h2>Novo boleto</h2><p>Você pode cadastrar uma previsão sem PDF; ela ficará como “A lançar”.</p><form id="form"><div class="grid2"><div class="field"><label>Fornecedor</label><input id="supplier" required placeholder="Ex.: ENEL"/></div><div class="field"><label>Vencimento</label><input id="due" type="date" required/></div></div><div class="field"><label>Linha digitável / código do boleto</label><input id="barcode" placeholder="Cole ou digite o código"/></div><div class="grid2"><div class="field"><label>Valor do boleto</label><input id="amount" inputmode="decimal" placeholder="Ex.: 1250,90"/></div><div class="field"><label>Status</label><select id="status"><option value="open">A pagar</option><option value="paid">Pago</option></select></div></div><div class="field"><label>PDF do boleto</label><input id="billFile" type="file" accept="application/pdf"/></div><div class="field"><label>Comprovante (opcional)</label><input id="receiptFile" type="file" accept="application/pdf,image/png,image/jpeg,image/webp"/></div><div class="field"><label>Observação</label><textarea id="note" placeholder="Opcional"></textarea></div><div class="dialog-actions"><button type="button" class="btn" id="cancel">Cancelar</button><button class="btn primary">Salvar boleto</button></div></form></div></div>
 <div class="toast" id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"></script>
 <script>
 const DB_NAME='central_boletos_db', DB_VERSION=1; let db; let rows=[];
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -204,14 +224,141 @@ if(localStorage.getItem('cb_sidebar_collapsed')==='1') appEl.classList.add('side
 const pt=new Intl.DateTimeFormat('pt-BR');
 const brl=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1800)}
-function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB_NAME,DB_VERSION);r.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains('boletos'))d.createObjectStore('boletos',{keyPath:'id'});if(!d.objectStoreNames.contains('files'))d.createObjectStore('files',{keyPath:'id'})};r.onsuccess=()=>{db=r.result;res(db)};r.onerror=()=>rej(r.error)})}
-function txStore(name,mode='readonly'){return db.transaction(name,mode).objectStore(name)}
-function getAll(){return new Promise((res,rej)=>{const r=txStore('boletos').getAll();r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
-function putRow(x){return new Promise((res,rej)=>{const r=txStore('boletos','readwrite').put(x);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
-function delRow(id){return new Promise((res,rej)=>{const r=txStore('boletos','readwrite').delete(id);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
-function putFile(id,file){return new Promise((res,rej)=>{const r=txStore('files','readwrite').put({id,blob:file,name:file.name,type:file.type});r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
-function getFile(id){return new Promise((res,rej)=>{const r=txStore('files').get(id);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
-function delFile(id){if(!id)return;txStore('files','readwrite').delete(id)}
+
+let sb, currentUser = null, busy = false, sessionEpoch = 0;
+const stagedFiles = new Map();
+function requireUser(){if(!currentUser)throw new Error('Entre na sua conta para continuar.');return currentUser.id}
+function safeStoredPath(path){if(path===null)return null;if(!/^[0-9a-f-]{36}\/(bill|receipt)_[0-9a-f-]{36}$/.test(path))throw new Error('Caminho de anexo inválido no cadastro.');return path}
+function unpack(r){return {id:r.id,supplier:r.supplier,due:r.due_date,amount:Number(r.amount),barcode:r.barcode||'',status:r.status,billId:safeStoredPath(r.bill_path),receiptId:safeStoredPath(r.receipt_path),note:r.note||'',paidAt:r.paid_at,createdAt:r.created_at}}
+async function getAll(){
+ const uid=requireUser(), result=[];
+ for(let offset=0;;offset+=500){
+  const {data,error}=await sb.from('boletos').select('*').eq('owner_id',uid).order('id').range(offset,offset+499);
+  if(error)throw error;result.push(...data.map(unpack));if(data.length<500)break;
+ }
+ return result;
+}
+function fileSpec(id){
+ if(!id)return null;
+ if(id.startsWith('bill_'))return {bucket:'boletos',path:requireUser()+'/'+id};
+ if(id.startsWith('receipt_'))return {bucket:'comprovantes',path:requireUser()+'/'+id};
+ // Persisted paths contain only a user UUID and a generated bill_/receipt_ key.
+ const parts=id.split('/');
+ if(parts.length!==2||parts[0]!==requireUser()||! /^(bill|receipt)_[0-9a-f-]{36}$/.test(parts[1]))throw new Error('Caminho de arquivo inválido.');
+ return {bucket:parts[1].startsWith('bill_')?'boletos':'comprovantes',path:id};
+}
+async function putFile(id,file){
+ if(!file||!file.size)throw new Error('O arquivo está vazio.');
+ if(file.size>50*1024*1024)throw new Error('O limite é de 50 MB por arquivo.');
+ const spec=fileSpec(id);
+ if(spec.bucket==='boletos'&&file.type!=='application/pdf')throw new Error('Selecione um PDF para o boleto.');
+ if(spec.bucket==='comprovantes'&&!['application/pdf','image/png','image/jpeg','image/webp'].includes(file.type))throw new Error('Use PDF, PNG, JPG ou WebP para o comprovante.');
+ const {error}=await sb.storage.from(spec.bucket).upload(spec.path,file,{upsert:false,contentType:file.type});
+ if(error)throw error;stagedFiles.set(id,spec);
+}
+async function getFile(id){
+ const spec=fileSpec(id);if(!spec)return null;
+ const {data,error}=await sb.storage.from(spec.bucket).download(spec.path);if(error)throw error;
+ const ext=data.type==='image/png'?'.png':data.type==='image/jpeg'?'.jpg':data.type==='image/webp'?'.webp':'.pdf';
+ return {blob:data,name:(spec.bucket==='boletos'?'boleto':'comprovante')+ext};
+}
+async function delFile(id){
+ if(!id)return;const spec=fileSpec(id);
+ const {error}=await sb.storage.from(spec.bucket).remove([spec.path]);if(error)throw error;
+ stagedFiles.delete(id);
+}
+async function putRow(x,insert=false){
+ const uid=requireUser();
+ const payload={id:x.id,owner_id:uid,supplier:x.supplier,due_date:x.due,amount:amountNum(x.amount),barcode:x.barcode||null,status:x.status,
+ bill_path:x.billId?fileSpec(x.billId).path:null,receipt_path:x.receiptId?fileSpec(x.receiptId).path:null,note:x.note||null,paid_at:x.paidAt||null};
+ const query=insert?sb.from('boletos').insert(payload):sb.from('boletos').update(payload).eq('id',x.id).eq('owner_id',uid);
+ const {data,error}=await query.select('id').single();if(error)throw error;
+ stagedFiles.delete(x.billId);stagedFiles.delete(x.receiptId);return data;
+}
+async function delRow(id){const {error}=await sb.from('boletos').delete().eq('id',id).eq('owner_id',requireUser()).select('id').single();if(error)throw error}
+function showError(e){console.error(e);const msg=e?.message||'Não foi possível concluir. Tente novamente.';$('#operationError').textContent=msg;$('#operationError').hidden=false}
+async function runAction(fn){
+ if(busy)return;requireUser();busy=true;document.body.classList.add('working');$('#operationError').hidden=true;
+ try{await fn()}catch(e){
+  for(const [key,spec] of [...stagedFiles]){try{
+   const column=spec.bucket==='boletos'?'bill_path':'receipt_path';
+   const {data,error}=await sb.from('boletos').select('id').eq(column,spec.path).limit(1);
+   if(error)continue;
+   if(!data.length)await delFile(key);else stagedFiles.delete(key);
+  }catch(cleanup){console.error('Falha ao remover upload incompleto',cleanup)}}
+  showError(e);
+ }finally{busy=false;document.body.classList.remove('working')}
+}
+async function cleanupOld(id){try{await delFile(id)}catch(e){showError(new Error('Registro salvo, mas não foi possível remover um anexo antigo. '+e.message))}}
+async function applySession(session){
+ const epoch=++sessionEpoch;currentUser=session?.user||null;rows=[];
+ $('#modal').classList.remove('open');$('#form').reset();$('#geninhoChat').classList.remove('open');
+ $('#messages').textContent='';$('#operationError').hidden=true;$('#accountEmail').textContent=currentUser?.email||'';
+ document.body.classList.toggle('signed-in',!!currentUser);
+ $('#authStatus').textContent='';
+ if(!currentUser)return;
+ try{const fetched=await getAll();if(epoch!==sessionEpoch)return;rows=fetched;render();await updateImportButton()}catch(e){showError(e)}
+}
+async function startCloud(){
+ try{
+  const {supabaseConfig:c}=await import('./supabase-config.js');
+  if(!window.supabase)throw new Error('Não foi possível carregar a conexão. Recarregue a página.');
+  sb=window.supabase.createClient(c.url,c.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  sb.auth.onAuthStateChange((event,session)=>{
+   // Do not await other Supabase calls from inside the auth callback.
+   if(event==='TOKEN_REFRESHED'&&session?.user?.id===currentUser?.id)return;
+   setTimeout(()=>applySession(session),0);
+  });
+  const {error}=await sb.auth.getSession();if(error)throw error;
+  $('#authStatus').textContent='';$('#authSubmit').disabled=false;$('#signupBtn').disabled=false;
+ }catch(e){$('#authStatus').textContent=e.message}
+}
+$('#authForm').onsubmit=async e=>{
+ e.preventDefault();$('#authSubmit').disabled=true;$('#authStatus').textContent='Entrando…';
+ try{const {error}=await sb.auth.signInWithPassword({email:$('#authEmail').value.trim(),password:$('#authPassword').value});if(error)throw error;$('#authPassword').value=''}
+ catch(e){$('#authStatus').textContent='Não foi possível entrar. Confira e-mail e senha. '+e.message}
+ finally{$('#authSubmit').disabled=false}
+};
+$('#signupBtn').onclick=async()=>{
+ if(!$('#authForm').reportValidity())return;
+ if($('#authPassword').value.length<8){$('#authStatus').textContent='Use uma senha com pelo menos 8 caracteres.';return}
+ $('#signupBtn').disabled=true;
+ try{const {data,error}=await sb.auth.signUp({email:$('#authEmail').value.trim(),password:$('#authPassword').value});if(error)throw error;
+ $('#authStatus').textContent=data.session?'Conta criada.':'Confira seu e-mail para confirmar o cadastro. Depois, volte e entre com sua senha.'}
+ catch(e){$('#authStatus').textContent=e.message}finally{$('#signupBtn').disabled=false}
+};
+$('#logoutBtn').onclick=async()=>{if(busy)return;const {error}=await sb.auth.signOut({scope:'local'});if(error)showError(error);else await applySession(null)};
+window.addEventListener('unhandledrejection',e=>{showError(e.reason);e.preventDefault()});
+
+function openLegacy(){return new Promise((resolve,reject)=>{
+ const req=indexedDB.open(DB_NAME,DB_VERSION);
+ req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains('boletos'))d.createObjectStore('boletos',{keyPath:'id'});if(!d.objectStoreNames.contains('files'))d.createObjectStore('files',{keyPath:'id'})};
+ req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);
+})}
+async function readLegacy(store,key){
+ const d=await openLegacy();try{return await new Promise((resolve,reject)=>{const tx=d.transaction(store,'readonly'),req=key===undefined?tx.objectStore(store).getAll():tx.objectStore(store).get(key);req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}finally{d.close()}
+}
+async function updateImportButton(){try{const old=await readLegacy('boletos');$('#importBtn').hidden=!old.length;$('#importBtn').textContent='Importar dados deste navegador ('+old.length+')'}catch(e){console.warn('Importação local indisponível',e)}}
+$('#importBtn').onclick=()=>runAction(async()=>{
+ const uid=requireUser(),legacy=await readLegacy('boletos');
+ if(!confirm('Importar '+legacy.length+' registros e seus anexos para '+currentUser.email+'? A cópia local será mantida.'))return;
+ let count=0,skipped=0;
+ for(const old of legacy){
+  const key='cb_import_v1_'+uid+'_'+old.id;
+  let id=localStorage.getItem(key);if(!id){id=crypto.randomUUID();localStorage.setItem(key,id)}
+  const {data:existing,error}=await sb.from('boletos').select('id').eq('id',id).maybeSingle();if(error)throw error;
+  if(existing){skipped++;continue}
+  const x={...old,id,billId:null,receiptId:null,status:old.status==='paid'?'paid':'open'};
+  for(const [field,prefix] of [['billId','bill_'],['receiptId','receipt_']]){
+   if(!old[field])continue;const file=await readLegacy('files',old[field]);
+   if(!file?.blob)throw new Error('Anexo local não encontrado: '+old.supplier+'. Os registros anteriores já foram importados; a cópia local foi mantida.');
+   const fid=prefix+crypto.randomUUID();await putFile(fid,new File([file.blob],file.name||'arquivo.pdf',{type:file.type||file.blob.type||'application/pdf'}));x[field]=fid;
+  }
+  await putRow(x,true);count++;$('#importBtn').textContent='Importando '+count+' de '+legacy.length+'…';
+ }
+ await refresh();await updateImportButton();
+ toast(count+' importados; '+skipped+' já importados. Cópia local mantida.');
+});
 function isoDate(d){return d.toISOString().slice(0,10)}
 function parseDate(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)}
 function weekBounds(){const now=new Date();const day=now.getDay();const diff=day===0?-6:1-day;const start=new Date(now);start.setHours(0,0,0,0);start.setDate(now.getDate()+diff);const end=new Date(start);end.setDate(start.getDate()+6);end.setHours(23,59,59,999);return {start,end}}
@@ -226,11 +373,30 @@ function statusHTML(r){const late=r.status==='open'&&parseDate(r.due)<new Date(n
 function monthStatusHTML(r){if(r.status==='paid')return '<span class="status paid">Pago</span>';if(!r.billId)return '<span class="status launch">A lançar</span>';return statusHTML(r)}
 function shortCode(c){if(!c)return '—';return c.length>22?c.slice(0,18)+'…':c}
 async function downloadFile(fileId){if(!fileId)return toast('Arquivo não anexado');const f=await getFile(fileId);if(!f)return toast('Arquivo não encontrado');const u=URL.createObjectURL(f.blob),a=document.createElement('a');a.href=u;a.download=f.name||'arquivo.pdf';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
-async function addBill(id){const inp=document.createElement('input');inp.type='file';inp.accept='application/pdf';inp.onchange=async()=>{const file=inp.files[0];if(!file)return;const r=rows.find(x=>x.id===id);const fid='bill_'+crypto.randomUUID();await putFile(fid,file);if(r.billId)delFile(r.billId);r.billId=fid;r.billName=file.name;await putRow(r);await refresh();toast('Boleto anexado')};inp.click()}
-async function addReceipt(id){const inp=document.createElement('input');inp.type='file';inp.accept='application/pdf,image/*';inp.onchange=async()=>{const file=inp.files[0];if(!file)return;const r=rows.find(x=>x.id===id);const fid='receipt_'+crypto.randomUUID();await putFile(fid,file);if(r.receiptId)delFile(r.receiptId);r.receiptId=fid;r.receiptName=file.name;r.status='paid';r.paidAt=r.paidAt||new Date().toISOString();await putRow(r);await refresh();toast('Comprovante anexado e boleto marcado como pago')};inp.click()}
-async function togglePaid(id){const r=rows.find(x=>x.id===id);r.status=r.status==='paid'?'open':'paid';r.paidAt=r.status==='paid'?(r.paidAt||new Date().toISOString()):null;await putRow(r);await refresh();toast(r.status==='paid'?'Marcado como pago':'Reaberto')}
-async function removeRow(id){if(!confirm('Excluir este boleto?'))return;const r=rows.find(x=>x.id===id);delFile(r.billId);delFile(r.receiptId);await delRow(id);await refresh()}
-function render(){fillMonths();const q=$('#search').value.toLowerCase().trim(),mf=$('#monthFilter').value,sf=$('#statusFilter').value;const filtered=rows.filter(r=>(!q||r.supplier.toLowerCase().includes(q)||(r.barcode||'').includes(q))&&(mf==='all'||monthKey(r)===mf)&&(sf==='all'||r.status===sf));$('#tbody').innerHTML=filtered.map(r=>`<tr><td><b>${esc(r.supplier)}</b></td><td>${pt.format(parseDate(r.due))}</td><td>${r.barcode?`<button class="mini" onclick="copyCode('${r.id}')">${esc(shortCode(r.barcode))}</button>`:'—'}</td><td>${r.billId?`<button class="mini" onclick="downloadFile('${r.billId}')">Baixar PDF</button>`:`<button class="mini" onclick="addBill('${r.id}')">+ Anexar PDF</button>`}</td><td>${statusHTML(r)}</td><td>${r.receiptId?`<button class="mini" onclick="downloadFile('${r.receiptId}')">Ver comprovante</button>`:'—'}</td><td><div class="row-actions">${!r.billId?`<button class="mini" onclick="addBill('${r.id}')">+ Anexar boleto</button>`:''}<button class="mini" onclick="togglePaid('${r.id}')">${r.status==='paid'?'Reabrir':'Marcar pago'}</button><button class="mini" onclick="addReceipt('${r.id}')">+ Comprovante</button><button class="mini" onclick="removeRow('${r.id}')">Excluir</button></div></td></tr>`).join('');$('#empty').style.display=filtered.length?'none':'block';
+
+function attachFile(id,receipt){
+ const input=document.createElement('input');input.type='file';input.accept=receipt?'application/pdf,image/png,image/jpeg,image/webp':'application/pdf';
+ input.onchange=()=>runAction(async()=>{
+  const file=input.files[0];if(!file)return;
+  const original=rows.find(x=>x.id===id);if(!original)throw new Error('Registro não encontrado.');
+  const r={...original},field=receipt?'receiptId':'billId',old=r[field],fid=(receipt?'receipt_':'bill_')+crypto.randomUUID();
+  await putFile(fid,file);r[field]=fid;
+  if(receipt){r.status='paid';r.paidAt=r.paidAt||new Date().toISOString()}
+  await putRow(r);await cleanupOld(old);await refresh();toast(receipt?'Comprovante salvo. Boleto marcado como pago.':'Boleto anexado.');
+ });input.click();
+}
+function addBill(id){attachFile(id,false)}
+function addReceipt(id){attachFile(id,true)}
+function togglePaid(id){return runAction(async()=>{const r={...rows.find(x=>x.id===id)};r.status=r.status==='paid'?'open':'paid';r.paidAt=r.status==='paid'?(r.paidAt||new Date().toISOString()):null;await putRow(r);await refresh();toast(r.status==='paid'?'Marcado como pago':'Reaberto')})}
+function removeRow(id){return runAction(async()=>{if(!confirm('Excluir este boleto e seus anexos?'))return;const r=rows.find(x=>x.id===id);await delRow(id);await cleanupOld(r.billId);await cleanupOld(r.receiptId);await refresh()})}
+let editingId=null;
+function editRow(id){
+ const r=rows.find(x=>x.id===id);if(!r)return;editingId=id;$('#form').reset();
+ $('#supplier').value=r.supplier;$('#due').value=r.due;$('#barcode').value=r.barcode;
+ $('#amount').value=Number(r.amount).toFixed(2).replace('.',',');$('#status').value=r.status;$('#note').value=r.note;
+ $('#modal').classList.add('open');
+}
+function render(){fillMonths();const q=$('#search').value.toLowerCase().trim(),mf=$('#monthFilter').value,sf=$('#statusFilter').value;const filtered=rows.filter(r=>(!q||r.supplier.toLowerCase().includes(q)||(r.barcode||'').includes(q))&&(mf==='all'||monthKey(r)===mf)&&(sf==='all'||r.status===sf));$('#tbody').innerHTML=filtered.map(r=>`<tr><td><b>${esc(r.supplier)}</b></td><td>${pt.format(parseDate(r.due))}</td><td>${r.barcode?`<button class="mini" onclick="copyCode('${r.id}')">${esc(shortCode(r.barcode))}</button>`:'—'}</td><td>${r.billId?`<button class="mini" onclick="downloadFile('${r.billId}')">Baixar PDF</button>`:`<button class="mini" onclick="addBill('${r.id}')">+ Anexar PDF</button>`}</td><td>${statusHTML(r)}</td><td>${r.receiptId?`<button class="mini" onclick="downloadFile('${r.receiptId}')">Ver comprovante</button>`:'—'}</td><td><div class="row-actions">${!r.billId?`<button class="mini" onclick="addBill('${r.id}')">+ Anexar boleto</button>`:''}<button class="mini" onclick="togglePaid('${r.id}')">${r.status==='paid'?'Reabrir':'Marcar pago'}</button><button class="mini" onclick="addReceipt('${r.id}')">+ Comprovante</button><button class="mini" onclick="editRow(\'${r.id}\')">Editar</button><button class="mini" onclick="removeRow('${r.id}')">Excluir</button></div></td></tr>`).join('');$('#empty').style.display=filtered.length?'none':'block';
 const now=new Date(),currentKey=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`,currentRows=rows.filter(r=>monthKey(r)===currentKey);
 const cLaunch=currentRows.filter(r=>r.status!=='paid'&&!r.billId).length,cOpen=currentRows.filter(r=>r.status==='open'&&r.billId).length,cPaid=currentRows.filter(r=>r.status==='paid').length,cWeek=rows.filter(r=>r.status==='open'&&isWeek(r)).length,total=currentRows.length||1;
 $('#cLaunch').textContent=cLaunch;$('#cWeek').textContent=cWeek;
@@ -244,11 +410,25 @@ function renderMonth(){if(!$('#monthView'))return;const key=$('#monthView').valu
 function weekCard(r,actions){const d=parseDate(r.due),today=new Date();today.setHours(0,0,0,0);const tomorrow=new Date(today);tomorrow.setDate(today.getDate()+1);let tag=`${String(d.getDate()).padStart(2,'0')} ${monthNames[d.getMonth()].slice(0,3).toUpperCase()}`,cls='';if(d.getTime()===today.getTime()){tag='HOJE';cls='urgent'}else if(d.getTime()===tomorrow.getTime()){tag='AMANHÃ';cls='soon'}const days=Math.round((d-today)/86400000),when=days===0?'Vence hoje':days===1?'Vence amanhã':days>1?`Em ${days} dias`:'Vencido';return `<div class="week-item"><div class="datebox ${cls}"><small>${tag}</small><b>${d.getDate()}</b></div><div class="week-info"><h4>${esc(r.supplier)}</h4><p>${r.note?esc(r.note):'Boleto cadastrado na central'}</p></div><div class="week-value"><b>${r.amount?brl.format(amountNum(r.amount)):'—'}</b><small>${when}</small></div><div class="row-actions">${r.barcode?`<button class="mini" onclick="copyCode('${r.id}')">Copiar código</button>`:''}${r.billId?`<button class="mini" onclick="downloadFile('${r.billId}')">Ver boleto</button>`:`<button class="mini" onclick="addBill('${r.id}')">Anexar PDF</button>`}</div></div>`}
 function reportRows(){const paid=rows.filter(r=>r.status==='paid');const mode=$('#reportRange')?.value||'month';const now=new Date();let start,end,label;if(mode==='month'){const key=$('#reportMonth').value;const [y,m]=key.split('-').map(Number);start=new Date(y,m-1,1);end=new Date(y,m,0,23,59,59,999);label=monthLabel(key)}else if(mode==='year'){const y=Number($('#reportYear').value);start=new Date(y,0,1);end=new Date(y,11,31,23,59,59,999);label=String(y)}else{const n=Number(mode);end=new Date(now.getFullYear(),now.getMonth()+1,0,23,59,59,999);start=new Date(now.getFullYear(),now.getMonth()-n+1,1);label=`Últimos ${n} meses`}return {list:paid.filter(r=>{const d=parseDate(r.due);return d>=start&&d<=end}).sort((a,b)=>b.due.localeCompare(a.due)),label}}
 function renderReports(){if(!$('#reportBody'))return;const {list,label}=reportRows();$('#rPeriod').textContent=label;$('#rCount').textContent=list.length;$('#rTotal').textContent=brl.format(list.reduce((a,r)=>a+amountNum(r.amount),0));$('#reportBody').innerHTML=list.map(r=>`<tr><td><b>${esc(r.supplier)}</b></td><td>${pt.format(parseDate(r.due))}</td><td>${brl.format(amountNum(r.amount))}</td><td>${r.billId?`<button class="mini" onclick="downloadFile('${r.billId}')">Abrir boleto</button>`:'—'}</td><td>${r.receiptId?`<button class="mini" onclick="downloadFile('${r.receiptId}')">Abrir comprovante</button>`:'<span style="color:#ffcf6e">Sem comprovante</span>'}</td></tr>`).join('');$('#reportEmpty').style.display=list.length?'none':'block';$('#reportMonth').style.display=$('#reportRange').value==='month'?'block':'none';$('#reportYear').style.display=$('#reportRange').value==='year'?'block':'none'}
-function esc(s=''){return s.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function esc(s=''){return String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 async function copyCode(id){const r=rows.find(x=>x.id===id);if(!r||!r.barcode)return;await navigator.clipboard.writeText(r.barcode);toast('Linha digitável copiada')}
-async function refresh(){rows=await getAll();render()}
-$('#form').addEventListener('submit',async e=>{e.preventDefault();const id=crypto.randomUUID(),bill=$('#billFile').files[0],rec=$('#receiptFile').files[0];let billId=null,receiptId=null;if(bill){billId='bill_'+crypto.randomUUID();await putFile(billId,bill)}if(rec){receiptId='receipt_'+crypto.randomUUID();await putFile(receiptId,rec)}const row={id,supplier:$('#supplier').value.trim(),due:$('#due').value,barcode:$('#barcode').value.replace(/\s+/g,' ').trim(),amount:amountNum($('#amount').value),status:rec?'paid':$('#status').value,paidAt:(rec||$('#status').value==='paid')?new Date().toISOString():null,billId,billName:bill?.name||'',receiptId,receiptName:rec?.name||'',note:$('#note').value.trim(),createdAt:new Date().toISOString()};await putRow(row);$('#form').reset();$('#modal').classList.remove('open');await refresh();toast('Boleto salvo')});
-if($('#newBtn')) $('#newBtn').onclick=()=>$('#modal').classList.add('open');$('#newBtnSearch').onclick=()=>$('#modal').classList.add('open');$('#newMonthBtn').onclick=()=>$('#modal').classList.add('open');$('#cancel').onclick=()=>$('#modal').classList.remove('open');$('#modal').addEventListener('click',e=>{if(e.target===$('#modal'))$('#modal').classList.remove('open')});
+async function refresh(){const epoch=sessionEpoch,next=await getAll();if(epoch!==sessionEpoch)return;rows=next;render()}
+
+$('#form').addEventListener('submit',e=>{e.preventDefault();runAction(async()=>{
+ const original=editingId?rows.find(x=>x.id===editingId):null;
+ const id=original?.id||crypto.randomUUID(),bill=$('#billFile').files[0],rec=$('#receiptFile').files[0];
+ const row={id,supplier:$('#supplier').value.trim(),due:$('#due').value,barcode:$('#barcode').value.trim(),amount:amountNum($('#amount').value),status:rec?'paid':$('#status').value,
+ billId:original?.billId||null,receiptId:original?.receiptId||null,note:$('#note').value.trim()};
+ if(!row.supplier||!row.due||row.amount<0)throw new Error('Confira fornecedor, vencimento e valor.');
+ row.paidAt=row.status==='paid'?(original?.paidAt||new Date().toISOString()):null;
+ if(bill){row.billId='bill_'+crypto.randomUUID();await putFile(row.billId,bill)}
+ if(rec){row.receiptId='receipt_'+crypto.randomUUID();await putFile(row.receiptId,rec)}
+ await putRow(row,!original);
+ if(bill&&original?.billId)await cleanupOld(original.billId);
+ if(rec&&original?.receiptId)await cleanupOld(original.receiptId);
+ editingId=null;$('#form').reset();$('#modal').classList.remove('open');await refresh();toast('Boleto salvo');
+})});
+if($('#newBtn')) $('#newBtn').onclick=()=>{editingId=null;$('#form').reset();$('#modal').classList.add('open')};$('#newBtnSearch').onclick=()=>{editingId=null;$('#form').reset();$('#modal').classList.add('open')};$('#newMonthBtn').onclick=()=>{editingId=null;$('#form').reset();$('#modal').classList.add('open')};$('#cancel').onclick=()=>$('#modal').classList.remove('open');$('#modal').addEventListener('click',e=>{if(e.target===$('#modal'))$('#modal').classList.remove('open')});
 function goPanel(id){$$('.nav button[data-panel]').forEach(x=>x.classList.toggle('active',x.dataset.panel===id));$$('.panel').forEach(p=>p.classList.remove('active'));$('#'+id).classList.add('active');const titles={central:'Central',mes:'Boletos do mês',buscar:'Buscar boleto',relatorios:'Relatórios'};$('#topTitle').textContent=titles[id]||'Central';render()}$$('.nav button[data-panel]').forEach(b=>b.onclick=()=>goPanel(b.dataset.panel));$$('[data-go]').forEach(b=>b.onclick=()=>goPanel(b.dataset.go));$('#menuToggle').onclick=()=>{const collapsed=!appEl.classList.contains('sidebar-collapsed');setSidebarCollapsed(collapsed)};
 $('#search').oninput=render;$('#monthFilter').onchange=render;$('#statusFilter').onchange=render;$('#monthView').onchange=renderMonth;$('#reportRange').onchange=renderReports;$('#reportMonth').onchange=renderReports;$('#reportYear').onchange=renderReports;
 if($('#backupBtn')) $('#backupBtn').onclick=()=>{const data=JSON.stringify({exportedAt:new Date().toISOString(),boletos:rows},null,2),blob=new Blob([data],{type:'application/json'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='central-boletos-backup.json';a.click();URL.revokeObjectURL(u);toast('Dados exportados (sem os PDFs)')};
@@ -259,7 +439,7 @@ $('#openGeninhoBrief').onclick=()=>{$('#geninhoChat').classList.add('open');setT
 $('#geninhoLaunch').onclick=()=>{$('#geninhoChat').classList.toggle('open');if($('#geninhoChat').classList.contains('open'))setTimeout(()=>$('#chatText').focus(),50)};
 $('#geninhoClose').onclick=()=>$('#geninhoChat').classList.remove('open');
 $$('[data-geninho]').forEach(b=>b.onclick=()=>{$('#chatText').value=b.dataset.geninho;sendChat()});
-openDB().then(refresh).catch(e=>alert('Erro ao abrir banco local: '+e.message));
+startCloud();
 </script>
 </body>
 </html>
