@@ -123,7 +123,27 @@ function gReview(file,kind,found,targetId,epoch){
   });
  };gScroll();
 }
-sendChat=function(){
+async function gAskGemini(question){
+ const {data:{session}}=await sb.auth.getSession();
+ if(!session?.access_token)throw new Error('Sua sessão expirou. Entre novamente.');
+ const bills=rows.slice(0,100).map(r=>({
+  supplier:String(r.supplier||'').slice(0,120),
+  due:String(r.due||'').slice(0,10),
+  amount:r.amount==null?null:Number(r.amount),
+  status:r.status==='paid'?'paid':'open',
+  note:String(r.note||'').slice(0,160)
+ }));
+ const response=await fetch('/api/geninho',{
+  method:'POST',
+  headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
+  body:JSON.stringify({question,bills})
+ });
+ const payload=await response.json().catch(()=>({}));
+ if(!response.ok)throw new Error(payload.error||'O Geninho não conseguiu responder agora.');
+ return payload.answer;
+}
+
+sendChat=async function(){
  const input=$('#chatText'),text=input.value.trim();if(!text)return;input.value='';gMessage(text,'user');
  const t=gNorm(text);
  if(/(enviar|mandar|anexar|lancar|cadastrar|novo)/.test(t)){
@@ -148,8 +168,15 @@ sendChat=function(){
  if(/^(quais|listar|mostrar|ver)/.test(t)&&t.includes('pagos')&&!t.includes('sem comprovante')){list=list.filter(r=>r.status==='paid');matched=true;title='Boletos pagos'}
  if(/^(listar|mostrar|todos|quanto|total)/.test(t))matched=true;
  if(matched){gList(list,title);return}
- const box=gMessage('Posso receber boletos e comprovantes, consultar vencimentos, buscar fornecedores, mostrar valores e abrir relatórios. Você também pode editar ou marcar um boleto como pago nos resultados.');
- gButton(box,'Enviar boleto',()=>gPick('bill'));gButton(box,'Enviar comprovante',()=>gPick('receipt'));gScroll();
+ const thinking=gMessage('Pensando…');
+ try{
+  thinking.textContent=await gAskGemini(text);
+ }catch(error){
+  thinking.textContent=error.message||'Não consegui falar com o Gemini agora.';
+  const actions=gMessage('Ainda posso receber boletos e comprovantes, consultar vencimentos, buscar fornecedores e abrir relatórios.');
+  gButton(actions,'Enviar boleto',()=>gPick('bill'));gButton(actions,'Enviar comprovante',()=>gPick('receipt'));
+ }
+ gScroll();
 };
 $('#sendChat').onclick=sendChat;
 $('#geninhoBill').onclick=()=>gPick('bill');
