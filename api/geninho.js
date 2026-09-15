@@ -1,7 +1,7 @@
 // Geninho — integração segura Gemini + Supabase.
 const SUPABASE_URL = 'https://mgwrovpwoqzzgfcwisfu.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_HSX0TcfcQJKfZ1eDowcvOw_tf9dRztB';
-const GEMINI_MODEL = 'gemini-2.5-flash-lite';
+const GEMINI_MODEL = 'gemini-3.5-flash-lite';
 
 function send(res, status, body) {
   res.status(status).setHeader('Content-Type', 'application/json; charset=utf-8');
